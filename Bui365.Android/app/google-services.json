@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "379938812243",
+    "firebase_url": "https://bui365-dfe93.firebaseio.com",
+    "project_id": "bui365-dfe93",
+    "storage_bucket": "bui365-dfe93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379938812243:android:986b935e8449c8b9",
+        "android_client_info": {
+          "package_name": "bui365.mobile.main"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379938812243-l720uihv20idid5026j0rkitck2mjob5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZ906pDFe10hZF6X9Uc2Dwv7lQNNk4SlA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
