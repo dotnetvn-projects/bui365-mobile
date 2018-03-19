@@ -20,8 +20,6 @@ import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.presenter.MainActivityPresenter
 import bui365.mobile.main.util.showSnackBarAction
 import bui365.mobile.main.view.MainActivityView
-import org.json.JSONArray
-import org.json.JSONException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -109,31 +107,11 @@ class MainFragment : Fragment(), MainActivityView {
         inflater!!.inflate(R.menu.main_activity_menu, menu)
     }
 
-    override fun showResult(result: Any) {
-        try {
-            val jsonArray = JSONArray(result.toString())
-            val length = jsonArray.length()
-            for (i in 0 until length) {
-                val jsonObject = jsonArray.getJSONObject(i)
-                val article = Article()
-                article.id = jsonObject.getString("id")
-                article.categoryId = jsonObject.getString("categoryId")
-                article.categoryName = jsonObject.getString("categoryName")
-                article.content = jsonObject.getString("content")
-                article.description = jsonObject.getString("description")
-                article.image = jsonObject.getString("image")
-                article.subjectId = jsonObject.getString("subjectId")
-                article.subjectName = jsonObject.getString("subjectName")
-                article.title = jsonObject.getString("title")
-                article.updatedDate = jsonObject.getString("updatedDate")
-                article.updatedDate = jsonObject.getString("url")
-                articles.add(article)
-            }
-            slidingAdapter.notifyDataSetChanged()
-        } catch (e: JSONException) {
-            e.printStackTrace()
+    override fun showResult(articles: List<Article>) {
+        for (article in articles) {
+            this.articles.add(article)
         }
-
+        slidingAdapter.notifyDataSetChanged()
     }
 
     override fun showLoading() {
@@ -180,11 +158,9 @@ class MainFragment : Fragment(), MainActivityView {
 
     override fun showError() {
         showError(exception)
+        articles.clear()
+        slidingAdapter.notifyDataSetChanged()
         txtErrorLoading.visibility = View.VISIBLE
-        txtErrorLoading.setOnClickListener {
-            hideError()
-            presenter.start()
-        }
     }
 
     override fun hideError() {

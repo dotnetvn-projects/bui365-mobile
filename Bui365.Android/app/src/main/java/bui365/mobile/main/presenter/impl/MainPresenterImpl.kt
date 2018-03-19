@@ -3,6 +3,7 @@ package bui365.mobile.main.presenter.impl
 
 import bui365.mobile.main.business.MainBusiness
 import bui365.mobile.main.impl.AsyncTaskListener
+import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.presenter.MainActivityPresenter
 import bui365.mobile.main.request.SampleRequest
 import bui365.mobile.main.view.MainActivityView
@@ -11,7 +12,7 @@ import com.google.common.base.Preconditions.checkNotNull
 class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresenter {
     private val mMainView: MainActivityView = checkNotNull(mainActivityView, "mainView cannot be null")
     private val mMainBusiness: MainBusiness = MainBusiness()
-
+    private var articles: ArrayList<Article> = ArrayList()
     private var mFirstLoad = true
 
     init {
@@ -38,7 +39,8 @@ class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresen
         if (forceUpdate) {
             //refresh method
         }
-//        mMainBusiness.getTask(this)
+
+        //Call random image api request
         SampleRequest(object : AsyncTaskListener<String> {
             override fun onTaskPreExecute() {
                 mMainView.showLoading()
@@ -46,12 +48,19 @@ class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresen
 
             override fun onTaskComplete(result: Any) {
                 mMainView.hideLoading()
-                if (mMainBusiness.handleData(result)) {
+                if (mMainBusiness.isEmptyArticle(result)) {
                     mMainView.hideError()
-                    mMainView.showResult(result)
+                    articles = mMainBusiness.handleData(result)
+                    mMainView.showResult(articles)
                 } else {
                     mMainView.showError()
                 }
+//                if (mMainBusiness.handleData(result)) {
+//                    mMainView.hideError()
+//                    mMainView.showResult(result)
+//                } else {
+//                    mMainView.showError()
+//                }
             }
 
         }).execute()

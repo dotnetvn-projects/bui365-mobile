@@ -8,7 +8,5 @@ import bui365.mobile.main.presenter.MainActivityPresenter
 interface MainActivityView : BaseView<MainActivityPresenter> {
     fun showTaskDetailUi(id: Int)
 
-    fun showResult(result: Any)
-
-
+    fun showResult(articles: List<Article>)
 }
