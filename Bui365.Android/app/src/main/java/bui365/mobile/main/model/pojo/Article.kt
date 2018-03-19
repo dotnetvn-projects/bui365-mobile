@@ -1,4 +1,4 @@
-package bui365.mobile.main.model
+package bui365.mobile.main.model.pojo
 
 
 open class Article {

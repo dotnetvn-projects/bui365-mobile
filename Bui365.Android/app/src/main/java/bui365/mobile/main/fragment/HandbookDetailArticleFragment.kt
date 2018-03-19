@@ -144,14 +144,6 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
 
     }
 
-    override fun showEmptyText() {
-
-    }
-
-    override fun hideEmptyText() {
-
-    }
-
     override fun showLoading() {
 
     }

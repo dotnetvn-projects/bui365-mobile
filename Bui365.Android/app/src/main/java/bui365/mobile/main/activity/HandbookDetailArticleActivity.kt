@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import bui365.mobile.main.R
-import bui365.mobile.main.business.HandbookDetailArticleBusiness
+import bui365.mobile.main.presenter.impl.HandbookDetailArticlePresenterImpl
 import bui365.mobile.main.fragment.HandbookDetailArticleFragment
 import bui365.mobile.main.util.addFragmentToActivity
 
 class HandbookDetailArticleActivity : AppCompatActivity() {
 
-    private lateinit var mDetailArticleBusiness: HandbookDetailArticleBusiness
+    private lateinit var mDetailArticlePresenterImpl: HandbookDetailArticlePresenterImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,7 @@ class HandbookDetailArticleActivity : AppCompatActivity() {
                 ?: HandbookDetailArticleFragment.newInstance(articleId).also {
                     addFragmentToActivity(it, R.id.contentFrame)
                 }
-        mDetailArticleBusiness = HandbookDetailArticleBusiness(handbookDetailArticleFragment)
+        mDetailArticlePresenterImpl = HandbookDetailArticlePresenterImpl(handbookDetailArticleFragment)
     }
 
     override fun onSupportNavigateUp(): Boolean {

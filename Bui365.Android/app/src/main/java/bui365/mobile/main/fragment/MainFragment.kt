@@ -16,7 +16,7 @@ import bui365.mobile.main.activity.HandbookActivity
 import bui365.mobile.main.activity.HandbookDetailArticleActivity
 import bui365.mobile.main.adapter.MainSlidingAdapter
 import bui365.mobile.main.impl.MainItemListener
-import bui365.mobile.main.model.Article
+import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.presenter.MainActivityPresenter
 import bui365.mobile.main.util.showSnackBarAction
 import bui365.mobile.main.view.MainActivityView
@@ -28,7 +28,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainActivityFragment : Fragment(), MainActivityView {
+class MainFragment : Fragment(), MainActivityView {
 
     override lateinit var presenter: MainActivityPresenter
     private lateinit var btnHandbook: Button
@@ -136,14 +136,6 @@ class MainActivityFragment : Fragment(), MainActivityView {
 
     }
 
-    override fun showEmptyText() {
-
-    }
-
-    override fun hideEmptyText() {
-
-    }
-
     override fun showLoading() {
         progressBar.visibility = View.VISIBLE
     }
@@ -201,8 +193,8 @@ class MainActivityFragment : Fragment(), MainActivityView {
 
     companion object {
 
-        fun newInstance(): MainActivityFragment {
-            return MainActivityFragment()
+        fun newInstance(): MainFragment {
+            return MainFragment()
         }
     }
 }

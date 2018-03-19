@@ -5,10 +5,4 @@ interface BasePresenter {
 
     fun start()
 
-    /**
-     *
-     * @param forceUpdate
-     * @param index
-     */
-    fun loadTask(forceUpdate: Boolean, index: Int)
 }

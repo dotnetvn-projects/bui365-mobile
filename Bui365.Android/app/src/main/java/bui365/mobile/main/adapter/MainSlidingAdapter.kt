@@ -21,7 +21,7 @@ import java.util.ArrayList
 
 import bui365.mobile.main.R
 import bui365.mobile.main.impl.MainItemListener
-import bui365.mobile.main.model.Article
+import bui365.mobile.main.model.pojo.Article
 
 class MainSlidingAdapter(private val context: Context, private val mArticles: ArrayList<Article>, private val mMainItemListener: MainItemListener) : PagerAdapter() {
 

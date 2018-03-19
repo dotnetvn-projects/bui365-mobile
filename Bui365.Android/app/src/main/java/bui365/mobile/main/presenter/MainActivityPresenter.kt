@@ -5,4 +5,6 @@ import bui365.mobile.main.BasePresenter
 
 interface MainActivityPresenter : BasePresenter {
     fun openTaskDetails(id: Int)
+
+    fun loadTask(forceUpdate: Boolean)
 }

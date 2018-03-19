@@ -12,8 +12,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import bui365.mobile.main.R
 import bui365.mobile.main.impl.HandbookArticleItemListener
-import bui365.mobile.main.model.Article
-import bui365.mobile.main.model.EmptyArticle
+import bui365.mobile.main.model.pojo.Article
+import bui365.mobile.main.model.pojo.EmptyArticle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException

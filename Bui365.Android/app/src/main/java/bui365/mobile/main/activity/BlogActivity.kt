@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import bui365.mobile.main.R
-import bui365.mobile.main.business.BlogBusiness
-import bui365.mobile.main.presenter.BlogPresenter
 
 class BlogActivity : AppCompatActivity() {
 

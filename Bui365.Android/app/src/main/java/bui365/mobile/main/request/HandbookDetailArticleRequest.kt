@@ -20,7 +20,7 @@ class HandbookDetailArticleRequest(private val mListener: AsyncTaskListener<*>?,
     override fun doInBackground(vararg strings: String): Any {
         var json = ""
         try {
-            val url = Connection.createUrl(Config.BUI_SERVER + "/get-article-detail?id=" + id)
+            val url = Connection.createUrl(Config.BUI_SERVER + "get-article-detail?id=" + id)
             Log.e("kyo", "doInBackground: " + url!!)
             json = Connection.makeHttpRequest(url)
         } catch (e: Exception) {

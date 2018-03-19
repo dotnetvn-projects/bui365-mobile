@@ -1,7 +1,7 @@
 package bui365.mobile.main.business
 
 
-class HandbookBusiness {
+class MainBusiness {
 
     fun handleData(result: Any): Boolean {
         return result != ""

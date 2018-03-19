@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import bui365.mobile.main.R
-import bui365.mobile.main.business.MainActivityBusiness
-import bui365.mobile.main.fragment.MainActivityFragment
+import bui365.mobile.main.presenter.impl.MainPresenterImpl
+import bui365.mobile.main.fragment.MainFragment
 import bui365.mobile.main.util.addFragmentToActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mMainBusiness: MainActivityBusiness
+    private lateinit var mMainPresenterImpl: MainPresenterImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,11 +19,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         title = ""
         val mainActivityFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
-                as MainActivityFragment? ?: MainActivityFragment.newInstance().also {
+                as MainFragment? ?: MainFragment.newInstance().also {
             addFragmentToActivity(it, R.id.contentFrame)
         }
 
-        mMainBusiness = MainActivityBusiness(mainActivityFragment)
+        mMainPresenterImpl = MainPresenterImpl(mainActivityFragment)
 
     }
 }

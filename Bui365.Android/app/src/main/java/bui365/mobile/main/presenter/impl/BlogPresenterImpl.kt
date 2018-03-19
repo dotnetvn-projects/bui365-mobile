@@ -1,4 +1,4 @@
-package bui365.mobile.main.business
+package bui365.mobile.main.presenter.impl
 
 
 import bui365.mobile.main.presenter.BlogPresenter
@@ -6,7 +6,7 @@ import bui365.mobile.main.view.BlogView
 
 import com.google.common.base.Preconditions.checkNotNull
 
-class BlogBusiness(blogView: BlogView) : BlogPresenter {
+class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
     private val mBlogView: BlogView = checkNotNull(blogView, "Blog View cannot be null")
 
     private val mFirstLoad = true
@@ -16,11 +16,7 @@ class BlogBusiness(blogView: BlogView) : BlogPresenter {
     }
 
     override fun start() {
-        loadTask(false, 0)
-    }
-
-    override fun loadTask(forceUpdate: Boolean, index: Int) {
-        loadTask(forceUpdate || mFirstLoad, true, index)
+//        loadTask(false, 0)
     }
 
     /**

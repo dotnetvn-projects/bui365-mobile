@@ -17,8 +17,8 @@ import bui365.mobile.main.R
 import bui365.mobile.main.activity.HandbookDetailArticleActivity
 import bui365.mobile.main.adapter.HandbookArticleAdapter
 import bui365.mobile.main.impl.HandbookArticleItemListener
-import bui365.mobile.main.model.Article
-import bui365.mobile.main.model.EmptyArticle
+import bui365.mobile.main.model.pojo.Article
+import bui365.mobile.main.model.pojo.EmptyArticle
 import bui365.mobile.main.presenter.HandbookPresenter
 import bui365.mobile.main.view.HandbookView
 import org.json.JSONArray
@@ -176,14 +176,6 @@ class HandbookFragment : Fragment(), HandbookView {
 
     override fun hideError() {
         txtErrorLoading!!.visibility = View.GONE
-    }
-
-    override fun showEmptyText() {
-
-    }
-
-    override fun hideEmptyText() {
-
     }
 
     override fun showLoading() {

@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import bui365.mobile.main.R
 import bui365.mobile.main.adapter.BlogArticleAdapter
-import bui365.mobile.main.model.Article
+import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.presenter.BlogPresenter
 import bui365.mobile.main.view.BlogView
 import java.util.*
@@ -62,14 +62,6 @@ class BlogFragment : Fragment(), BlogView {
     }
 
     override fun hideError() {
-
-    }
-
-    override fun showEmptyText() {
-
-    }
-
-    override fun hideEmptyText() {
 
     }
 
