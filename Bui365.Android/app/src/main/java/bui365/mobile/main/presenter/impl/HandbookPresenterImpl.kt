@@ -1,11 +1,15 @@
 package bui365.mobile.main.presenter.impl
 
 
+import android.net.Uri
 import bui365.mobile.main.business.HandbookBusiness
 import bui365.mobile.main.impl.AsyncTaskListener
 import bui365.mobile.main.presenter.HandbookPresenter
 import bui365.mobile.main.request.HandbookArticleRequest
 import bui365.mobile.main.view.HandbookView
+import com.facebook.share.model.ShareHashtag
+import com.facebook.share.model.ShareLinkContent
+import com.facebook.share.widget.ShareDialog
 import com.google.common.base.Preconditions.checkNotNull
 
 class HandbookPresenterImpl(handbookView: HandbookView) : HandbookPresenter {
@@ -25,6 +29,16 @@ class HandbookPresenterImpl(handbookView: HandbookView) : HandbookPresenter {
     override fun loadTask(forceUpdate: Boolean, index: Int) {
         loadTask(forceUpdate || mFirstLoad, true, index)
         mFirstLoad = false
+    }
+
+    override fun shareArticle(url: String) {
+        if (ShareDialog.canShow(ShareLinkContent::class.java)) {
+            val content = ShareLinkContent.Builder()
+                    .setContentUrl(Uri.parse(url))
+                    .setShareHashtag(ShareHashtag.Builder().setHashtag("#Bui365").build())
+                    .build()
+            mHandbookView.showShareArticle(content)
+        }
     }
 
     /**

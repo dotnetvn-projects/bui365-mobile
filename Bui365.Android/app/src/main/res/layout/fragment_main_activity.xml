@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="bui365.mobile.main.fragment.MainFragment">
 
@@ -125,7 +126,7 @@
             android:layout_margin="16dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/random_image"
-            android:src="@drawable/flogo_mobile" />
+            app:srcCompat="@drawable/flogo_mobile" />
     </LinearLayout>
 
 </LinearLayout>

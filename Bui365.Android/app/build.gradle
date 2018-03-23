@@ -43,9 +43,11 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
     compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile 'com.facebook.android:facebook-share:4.31.0'
 
 }
 apply plugin: 'com.google.gms.google-services'
 repositories {
     mavenCentral()
 }
+apply plugin: 'kotlin-android-extensions'

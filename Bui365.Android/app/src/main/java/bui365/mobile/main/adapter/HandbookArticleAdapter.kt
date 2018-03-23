@@ -62,6 +62,8 @@ class HandbookArticleAdapter(private val mContext: Context, private val mArticle
                     .into(holder.imgPicture)
             holder.txtDescription.text = article.description
             holder.imgPicture.setOnClickListener { mArticleItemListener.onImageClick(position) }
+            holder.txtComment.setOnClickListener { mArticleItemListener.onCommentClick(position) }
+            holder.txtShare.setOnClickListener { mArticleItemListener.onShareClick(position) }
         } else {
             (holder as ProgressHolder).progressBar.isIndeterminate = true
         }

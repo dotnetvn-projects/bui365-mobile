@@ -58,7 +58,7 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
         }
         txtTitle = root.findViewById(R.id.txtTitle)
         txtUpdatedDate = root.findViewById(R.id.txtUpdatedDate)
-        webView = root.findViewById(R.id.webview)
+        webView = root.findViewById(R.id.webView)
         setHasOptionsMenu(true)
         return root
     }

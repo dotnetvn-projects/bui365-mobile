@@ -14,6 +14,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import bui365.mobile.main.R
+import bui365.mobile.main.activity.CommentsActivity
 import bui365.mobile.main.activity.HandbookDetailArticleActivity
 import bui365.mobile.main.adapter.HandbookArticleAdapter
 import bui365.mobile.main.impl.HandbookArticleItemListener
@@ -21,6 +22,12 @@ import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.model.pojo.EmptyArticle
 import bui365.mobile.main.presenter.HandbookPresenter
 import bui365.mobile.main.view.HandbookView
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.share.Sharer
+import com.facebook.share.model.ShareLinkContent
+import com.facebook.share.widget.ShareDialog
 import org.json.JSONArray
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -37,6 +44,8 @@ class HandbookFragment : Fragment(), HandbookView {
     private var articleAdapter: HandbookArticleAdapter? = null
     private var txtErrorLoading: TextView? = null
     private var progressBar: ProgressBar? = null
+    private var callbackManager: CallbackManager? = null
+    var shareDialog: ShareDialog? = null
 
     private var start = 0
     private var loading = false
@@ -50,12 +59,59 @@ class HandbookFragment : Fragment(), HandbookView {
 
     private var mArticleItemListener: HandbookArticleItemListener = object : HandbookArticleItemListener {
 
+        /** start handbook detail article activity
+         *  pass article id to display the article detail
+         */
         override fun onImageClick(position: Int) {
             val article = mArticleList!![position]
-            val detailArticle = Intent(activity, HandbookDetailArticleActivity::class.java)
-            detailArticle.putExtra("articleId", article.id)
-            startActivity(detailArticle)
+            Intent(activity, HandbookDetailArticleActivity::class.java).apply {
+                putExtra("articleId", article.id)
+            }.also { startActivity(it) }
         }
+
+        /** start Facebook Comments Activity
+         *  pass article url
+         */
+        override fun onCommentClick(position: Int) {
+            val article = mArticleList!![position]
+            Intent(activity, CommentsActivity::class.java).apply {
+                putExtra("url", article.url)
+            }.also { startActivity(it) }
+        }
+
+        /** call the share dialog api from facebook
+         *  pass article url to share to facebook
+         */
+        override fun onShareClick(position: Int) {
+            presenter.shareArticle(mArticleList!![position].url!!)
+//            if (ShareDialog.canShow(ShareLinkContent::class.java)) {
+//                val content = ShareLinkContent.Builder()
+//                        .setContentUrl(Uri.parse(mArticleList!![position].url))
+//                        .setShareHashtag(ShareHashtag.Builder().setHashtag("#Bui365").build())
+//                        .build()
+//                shareDialog!!.show(content)
+//            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        callbackManager = CallbackManager.Factory.create()
+        shareDialog = ShareDialog(this)
+        shareDialog!!.registerCallback(callbackManager, object : FacebookCallback<Sharer.Result> {
+            override fun onSuccess(result: Sharer.Result?) {
+                Toast.makeText(activity, getString(R.string.txtShareSuccess), Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onCancel() {
+
+            }
+
+            override fun onError(error: FacebookException?) {
+                error!!.printStackTrace()
+            }
+
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -186,6 +242,10 @@ class HandbookFragment : Fragment(), HandbookView {
         progressBar!!.visibility = View.GONE
     }
 
+    override fun showShareArticle(content: ShareLinkContent) {
+        shareDialog!!.show(content)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.handbook_activity_menu, menu)
     }
@@ -195,5 +255,10 @@ class HandbookFragment : Fragment(), HandbookView {
         fun newInstance(): HandbookFragment {
             return HandbookFragment()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        callbackManager!!.onActivityResult(requestCode, resultCode, data)
     }
 }// Required empty public constructor

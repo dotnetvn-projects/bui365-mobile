@@ -13,14 +13,17 @@
     <string name="connection_failed">Connection Failed</string>
     <string name="title_detail">Detail</string>
     <string name="retry">Retry</string>
+    <string name="facebook_app_id">352236748617105</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="random_image">Random Image</string>
     <string name="txtLike">Like</string>
     <string name="txtComment">Comment</string>
+    <string name="txtComments">Comments</string>
     <string name="txtShare">Share</string>
     <string name="txtSearch">Search</string>
     <string name="txtErrorLoading">Error, please try again!</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="txtShareSuccess">Successful!</string>
 </resources>

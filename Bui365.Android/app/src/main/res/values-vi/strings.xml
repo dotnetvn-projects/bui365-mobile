@@ -9,4 +9,11 @@
     <string name="txtSearch">Tìm kiếm</string>
     <string name="title_notifications">Thông báo</string>
     <string name="txtErrorLoading">Có lỗi, vui lòng thử lại!</string>
+    <string name="txtShareSuccess">Thành công!</string>
+    <string name="title_handbook">Sổ tay</string>
+    <string name="title_favorites">Yêu thích</string>
+    <string name="title_profile">Thông tin cá nhân</string>
+    <string name="title_blog">Nhật ký</string>
+    <string name="title_detail">Chi tiết</string>
+    <string name="title_home">Trang chủ</string>
 </resources>
