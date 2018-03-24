@@ -54,10 +54,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.HandbookActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activity.BlogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -2,6 +2,7 @@ package bui365.mobile.main.request
 
 
 import android.os.AsyncTask
+import android.util.Log
 
 import java.net.URL
 
@@ -11,15 +12,11 @@ import bui365.mobile.main.util.Connection
 
 class BlogArticleRequest(private val mListener: AsyncTaskListener<String>?, private val mStart: Int) : AsyncTask<String, Void, Any>() {
 
-    override fun onPreExecute() {
-        super.onPreExecute()
-        mListener!!.onTaskPreExecute()
-    }
-
-    override fun doInBackground(vararg strings: String): String {
+    override fun doInBackground(vararg params: String): String {
         var json = ""
         try {
-            val url = Connection.createUrl(Config.BUI_SERVER + "get-articles?start=" + 0 + "&take=5")
+            val url = Connection.createUrl(Config.BUI_SERVER + "get-articles?start=" + mStart + "&take=5")
+            Log.e("kyo", "doInBackground: " + url!!)
             json = Connection.makeHttpRequest(url)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -28,12 +25,16 @@ class BlogArticleRequest(private val mListener: AsyncTaskListener<String>?, priv
         return json
     }
 
+    override fun onPreExecute() {
+        super.onPreExecute()
+        mListener!!.onTaskPreExecute()
+    }
+
     override fun onPostExecute(s: Any) {
         super.onPostExecute(s)
         if (mListener == null) {
             return
         }
         mListener.onTaskComplete(s)
-
     }
 }

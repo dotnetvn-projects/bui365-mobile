@@ -13,7 +13,7 @@
         android:weightSum="3">
 
         <Button
-            android:id="@+id/btnHandbook"
+            android:id="@+id/btnBlog"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -24,11 +24,11 @@
             android:gravity="center"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text="@string/title_handbook"
+            android:text="@string/title_blog"
             android:textAllCaps="false" />
 
         <Button
-            android:id="@+id/btnBlog"
+            android:id="@+id/btnHandbook"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:gravity="center"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text="@string/title_blog"
+            android:text="@string/title_handbook"
             android:textAllCaps="false" />
 
         <Button

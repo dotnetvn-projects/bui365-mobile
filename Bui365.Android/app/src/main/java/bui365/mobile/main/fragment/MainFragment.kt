@@ -12,7 +12,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import bui365.mobile.main.R
-import bui365.mobile.main.activity.HandbookActivity
+import bui365.mobile.main.activity.BlogActivity
 import bui365.mobile.main.activity.HandbookDetailArticleActivity
 import bui365.mobile.main.adapter.MainSlidingAdapter
 import bui365.mobile.main.impl.MainItemListener
@@ -70,7 +70,9 @@ class MainFragment : Fragment(), MainActivityView {
             btnHandbook = (root.findViewById<Button>(R.id.btnHandbook)).also {
                 it.setOnClickListener { presenter.openTaskDetails(it.id) }
             }
-            btnBlog = root.findViewById(R.id.btnBlog)
+            btnBlog = (root.findViewById<Button>(R.id.btnBlog)).also {
+                it.setOnClickListener { presenter.openTaskDetails(it.id) }
+            }
             btnFavorite = root.findViewById(R.id.btnFavorite)
             imgLogo = root.findViewById(R.id.imgLogo)
         }
@@ -124,8 +126,8 @@ class MainFragment : Fragment(), MainActivityView {
 
     override fun showTaskDetailUi(id: Int) {
         when (id) {
-            R.id.btnHandbook -> {
-                val intent = Intent(activity, HandbookActivity::class.java)
+            R.id.btnBlog -> {
+                val intent = Intent(activity, BlogActivity::class.java)
                 startActivity(intent)
             }
 
@@ -146,7 +148,7 @@ class MainFragment : Fragment(), MainActivityView {
                 }
                 else -> {
                     view!!.showSnackBarAction(getString(R.string.connection_failed), Snackbar.LENGTH_INDEFINITE) {
-                        setAction("retry") {
+                        setAction(getString(R.string.retry)) {
                             hideError()
                             presenter.start()
                         }
