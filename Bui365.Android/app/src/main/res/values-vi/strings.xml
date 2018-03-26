@@ -3,9 +3,9 @@
     <string name="app_name">Bui365</string>
     <string name="retry">Thử lại</string>
     <string name="connection_failed">Kết nối thất bại</string>
-    <string name="txtLike">Thích</string>
-    <string name="txtComment">Bình luận</string>
-    <string name="txtShare">Chia sẻ</string>
+    <string name="txtLike">%1$d Thích</string>
+    <string name="txtComment">%1$d Bình luận</string>
+    <string name="txtShare">%1$d Chia sẻ</string>
     <string name="txtSearch">Tìm kiếm</string>
     <string name="title_notifications">Thông báo</string>
     <string name="txtErrorLoading">Có lỗi, vui lòng thử lại!</string>

@@ -7,6 +7,8 @@ interface BlogPresenter : BasePresenter {
 
     fun loadTask(forceUpdate: Boolean, index: Int)
 
+    fun loadFacebookSdk(url: String)
+
     fun shareArticle(url: String)
 
     fun loadComment(url: String)

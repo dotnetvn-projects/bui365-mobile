@@ -18,7 +18,7 @@ class BlogActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        title = getString(R.string.title_handbook)
+        title = getString(R.string.title_blog)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }

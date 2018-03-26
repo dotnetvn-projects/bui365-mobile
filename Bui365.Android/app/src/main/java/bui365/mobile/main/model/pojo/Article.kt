@@ -13,4 +13,7 @@ open class Article {
     var categoryName: String? = null
     var subjectName: String? = null
     var subjectId: String? = null
+
+    var facebookPOJO: FacebookPOJO = FacebookPOJO()
+
 }

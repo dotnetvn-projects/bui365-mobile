@@ -11,7 +11,9 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import bui365.mobile.main.R
+import bui365.mobile.main.impl.HandbookArticleItemListener
 import bui365.mobile.main.model.pojo.Article
+import bui365.mobile.main.model.pojo.EmptyArticle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -21,7 +23,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import java.util.*
 
-class BlogArticleAdapter(private val mContext: Context, private val mArticles: ArrayList<Article>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class BlogArticleAdapter(private val mContext: Context, private val mArticles: ArrayList<Article>, private val mArticleItemListener: HandbookArticleItemListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val VIEW_ITEM = 0
     private val VIEW_LOADING = 1
 
@@ -29,7 +31,7 @@ class BlogArticleAdapter(private val mContext: Context, private val mArticles: A
         val vh: RecyclerView.ViewHolder
         if (viewType == VIEW_ITEM) {
             val v = LayoutInflater.from(mContext).inflate(R.layout.item_handbook_article, parent, false)
-            vh = ItemViewHolder(v)
+            vh = ItemHolder(v)
         } else {
             val v = LayoutInflater.from(mContext).inflate(R.layout.item_progress, parent, false)
             vh = ProgressHolder(v)
@@ -38,7 +40,7 @@ class BlogArticleAdapter(private val mContext: Context, private val mArticles: A
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ItemViewHolder) {
+        if (holder is ItemHolder) {
             val article = mArticles[position]
             Glide.with(mContext).load(R.drawable.da_lat)
                     .apply(RequestOptions.bitmapTransform(CircleCrop()).placeholder(R.drawable.icon_mobile))
@@ -59,6 +61,12 @@ class BlogArticleAdapter(private val mContext: Context, private val mArticles: A
                     })
                     .into(holder.imgPicture)
             holder.txtDescription.text = article.description
+            holder.imgPicture.setOnClickListener { mArticleItemListener.onImageClick(position) }
+            holder.txtLike.text = mContext.getString(R.string.txtLike, article.facebookPOJO.likes.summary.likeCount)
+            holder.txtComment.text = mContext.getString(R.string.txtComment, article.facebookPOJO.share.commentCount)
+            holder.txtComment.setOnClickListener { mArticleItemListener.onCommentClick(position) }
+            holder.txtShare.text = mContext.getString(R.string.txtShare,article.facebookPOJO.share.shareCount)
+            holder.txtShare.setOnClickListener { mArticleItemListener.onShareClick(position) }
         } else {
             (holder as ProgressHolder).progressBar.isIndeterminate = true
         }
@@ -69,10 +77,14 @@ class BlogArticleAdapter(private val mContext: Context, private val mArticles: A
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (mArticles[position] != null) VIEW_ITEM else VIEW_LOADING
+        return if (mArticles[position] !is EmptyArticle) VIEW_ITEM else VIEW_LOADING
     }
 
-    private inner class ItemViewHolder internal constructor(v: View) : RecyclerView.ViewHolder(v) {
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    private inner class ItemHolder internal constructor(v: View) : RecyclerView.ViewHolder(v) {
         internal var imgAvatar: ImageView
         internal var imgPicture: ImageView
         internal var progressCircle: ProgressBar

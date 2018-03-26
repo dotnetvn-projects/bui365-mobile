@@ -1,22 +1,20 @@
 package bui365.mobile.main.request
 
-
 import android.os.AsyncTask
 import bui365.mobile.main.impl.AsyncTaskListener
-import bui365.mobile.main.util.Config
 import bui365.mobile.main.util.Connection
 
-class BlogArticleRequest(private val mListener: AsyncTaskListener<String>?, private val mStart: Int) : AsyncTask<String, Void, Any>() {
 
-    override fun doInBackground(vararg params: String): String {
+class FacebookUrlRequest(private val mListener: AsyncTaskListener<String>?, private val articleUrl: String) : AsyncTask<String, Void, Any>() {
+    override fun doInBackground(vararg p0: String?): Any {
         var json = ""
         try {
-            val url = Connection.createUrl(Config.BUI_SERVER + "get-articles?start=" + mStart + "&take=5")
+            val url = Connection.createUrl("https://graph.facebook.com/" +
+                    "?fields=og_object{likes.summary(true).limit(0)}%2Cshare&id=" + articleUrl)
             json = Connection.makeHttpRequest(url)
         } catch (e: Exception) {
-            e.printStackTrace()
-        }
 
+        }
         return json
     }
 

@@ -17,10 +17,11 @@ import android.widget.Toast
 import bui365.mobile.main.R
 import bui365.mobile.main.activity.CommentsActivity
 import bui365.mobile.main.activity.HandbookDetailArticleActivity
-import bui365.mobile.main.adapter.HandbookArticleAdapter
+import bui365.mobile.main.adapter.BlogArticleAdapter
 import bui365.mobile.main.impl.HandbookArticleItemListener
 import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.model.pojo.EmptyArticle
+import bui365.mobile.main.model.pojo.FacebookPOJO
 import bui365.mobile.main.presenter.BlogPresenter
 import bui365.mobile.main.util.showSnackBarAction
 import bui365.mobile.main.view.BlogView
@@ -30,10 +31,8 @@ import com.facebook.FacebookException
 import com.facebook.share.Sharer
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.widget.ShareDialog
-import org.json.JSONArray
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 
 
 class BlogFragment : Fragment(), BlogView {
@@ -42,8 +41,8 @@ class BlogFragment : Fragment(), BlogView {
     private var swipeRefresh: SwipeRefreshLayout? = null
     private var rcvHandbookArticle: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
-    private var mArticleList: ArrayList<Article>? = null
-    private var articleAdapter: HandbookArticleAdapter? = null
+    private var mArticleList: ArrayList<Article> = ArrayList()
+    private var articleAdapter: BlogArticleAdapter? = null
     private var txtErrorLoading: TextView? = null
     private var progressBar: ProgressBar? = null
     private var callbackManager: CallbackManager? = null
@@ -62,15 +61,15 @@ class BlogFragment : Fragment(), BlogView {
     private var mArticleItemListener: HandbookArticleItemListener = object : HandbookArticleItemListener {
 
         override fun onImageClick(position: Int) {
-            presenter.loadDetailArticle(mArticleList!![position].id!!)
+            presenter.loadDetailArticle(mArticleList[position].id!!)
         }
 
         override fun onCommentClick(position: Int) {
-            presenter.loadComment(mArticleList!![position].url!!)
+            presenter.loadComment(mArticleList[position].url!!)
         }
 
         override fun onShareClick(position: Int) {
-            presenter.shareArticle(mArticleList!![position].url!!)
+            presenter.shareArticle(mArticleList[position].url!!)
         }
     }
 
@@ -104,7 +103,7 @@ class BlogFragment : Fragment(), BlogView {
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         rcvHandbookArticle!!.layoutManager = layoutManager
         rcvHandbookArticle!!.isNestedScrollingEnabled = false
-        articleAdapter = HandbookArticleAdapter(activity!!, mArticleList!!, mArticleItemListener)
+        articleAdapter = BlogArticleAdapter(activity!!, mArticleList, mArticleItemListener)
         rcvHandbookArticle!!.adapter = articleAdapter
         txtErrorLoading = root.findViewById(R.id.txtErrorLoading)
         progressBar = root.findViewById(R.id.progressBar)
@@ -118,7 +117,7 @@ class BlogFragment : Fragment(), BlogView {
 
         swipeRefresh!!.setOnRefreshListener {
             swipeRefresh!!.isRefreshing = true
-            mArticleList!!.clear()
+            mArticleList.clear()
             articleAdapter!!.notifyDataSetChanged()
             start = 0
             loadEnd = false
@@ -136,12 +135,12 @@ class BlogFragment : Fragment(), BlogView {
                         && totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
                     loading = true
                     val emptyArticle = EmptyArticle()
-                    mArticleList!!.add(emptyArticle)
-                    articleAdapter!!.notifyItemInserted(mArticleList!!.size - 1)
+                    mArticleList.add(emptyArticle)
+                    articleAdapter!!.notifyItemInserted(mArticleList.size - 1)
                     handler = Handler()
                     handler.postDelayed({
-                        mArticleList!!.removeAt(mArticleList!!.size - 1)
-                        articleAdapter!!.notifyItemRemoved(mArticleList!!.size)
+                        mArticleList.removeAt(mArticleList.size - 1)
+                        articleAdapter!!.notifyItemRemoved(mArticleList.size)
                         start++
                         presenter.loadTask(false, start)
                     }, 1000)
@@ -151,36 +150,24 @@ class BlogFragment : Fragment(), BlogView {
 
     }
 
-    override fun showResult(result: Any) {
+    override fun showResult(articles: List<Article>, loadEnd: Boolean) {
         swipeRefresh!!.isRefreshing = false
-        try {
-            val jsonArray = JSONArray(result.toString())
-            val length = jsonArray.length()
-            for (i in 0 until length) {
-                val jsonObject = jsonArray.getJSONObject(i)
-                val article = Article()
-                article.id = jsonObject.getString("id")
-                article.categoryId = jsonObject.getString("categoryId")
-                article.categoryName = jsonObject.getString("categoryName")
-                article.content = jsonObject.getString("content")
-                article.description = jsonObject.getString("description")
-                article.image = jsonObject.getString("image")
-                article.subjectId = jsonObject.getString("subjectId")
-                article.subjectName = jsonObject.getString("subjectName")
-                article.title = jsonObject.getString("title")
-                article.updatedDate = jsonObject.getString("updatedDate")
-                article.url = jsonObject.getString("url")
-                mArticleList!!.add(article)
-            }
-            articleAdapter!!.notifyDataSetChanged()
-            loading = false
-            if (length == 0) {
-                loadEnd = true
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        for (article in articles) {
+            mArticleList.add(article)
+            presenter.loadFacebookSdk(article.url!!)
         }
+        articleAdapter!!.notifyDataSetChanged()
+        loading = false
+        this.loadEnd = loadEnd
+    }
 
+    override fun showFacebookSdk(facebookPOJO: FacebookPOJO) {
+        for (article in mArticleList) {
+            if (article.url!! == facebookPOJO.id) {
+                article.facebookPOJO = facebookPOJO
+            }
+        }
+        articleAdapter!!.notifyDataSetChanged()
     }
 
     private fun showError(exception: Exception?) {

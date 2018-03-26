@@ -4,8 +4,11 @@ package bui365.mobile.main.presenter.impl
 import android.net.Uri
 import bui365.mobile.main.business.BlogBusiness
 import bui365.mobile.main.impl.AsyncTaskListener
+import bui365.mobile.main.model.pojo.Article
+import bui365.mobile.main.model.pojo.FacebookPOJO
 import bui365.mobile.main.presenter.BlogPresenter
 import bui365.mobile.main.request.BlogArticleRequest
+import bui365.mobile.main.request.FacebookUrlRequest
 import bui365.mobile.main.view.BlogView
 import com.facebook.share.model.ShareHashtag
 import com.facebook.share.model.ShareLinkContent
@@ -15,6 +18,8 @@ import com.google.common.base.Preconditions.checkNotNull
 class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
     private val mBlogView: BlogView = checkNotNull(blogView, "blogView cannot be null")
     private val mBlogBusiness: BlogBusiness = BlogBusiness()
+    private var articles: ArrayList<Article> = ArrayList()
+    private var facebookPOJO: FacebookPOJO = FacebookPOJO()
 
     private var mFirstLoad = true
 
@@ -29,6 +34,20 @@ class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
     override fun loadTask(forceUpdate: Boolean, index: Int) {
         loadTask(forceUpdate || mFirstLoad, true, index)
         mFirstLoad = false
+    }
+
+    override fun loadFacebookSdk(url: String) {
+        FacebookUrlRequest(object : AsyncTaskListener<String> {
+            override fun onTaskPreExecute() {
+
+            }
+
+            override fun onTaskComplete(result: Any) {
+                facebookPOJO = mBlogBusiness.handleFacebookSdk(result)
+                mBlogView.showFacebookSdk(facebookPOJO)
+            }
+
+        }, url).execute()
     }
 
     override fun shareArticle(url: String) {
@@ -69,9 +88,11 @@ class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
 
             override fun onTaskComplete(result: Any) {
                 mBlogView.hideLoading()
-                if (mBlogBusiness.handleData(result)) {
+                if (!mBlogBusiness.isEmptyArticle(result)) {
                     mBlogView.hideError()
-                    mBlogView.showResult(result)
+                    articles = mBlogBusiness.handleData(result)
+                    mBlogView.showResult(articles, mBlogBusiness.loadEnd)
+                    articles.clear()
                 } else {
                     mBlogView.showError()
                 }

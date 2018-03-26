@@ -48,19 +48,13 @@ class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresen
 
             override fun onTaskComplete(result: Any) {
                 mMainView.hideLoading()
-                if (mMainBusiness.isEmptyArticle(result)) {
+                if (!mMainBusiness.isEmptyArticle(result)) {
                     mMainView.hideError()
                     articles = mMainBusiness.handleData(result)
                     mMainView.showResult(articles)
                 } else {
                     mMainView.showError()
                 }
-//                if (mMainBusiness.handleData(result)) {
-//                    mMainView.hideError()
-//                    mMainView.showResult(result)
-//                } else {
-//                    mMainView.showError()
-//                }
             }
 
         }).execute()

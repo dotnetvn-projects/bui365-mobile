@@ -25,7 +25,7 @@ class MainBusiness {
                 article.subjectName = jsonObject.getString("subjectName")
                 article.title = jsonObject.getString("title")
                 article.updatedDate = jsonObject.getString("updatedDate")
-                article.updatedDate = jsonObject.getString("url")
+                article.url = jsonObject.getString("url")
                 articles.add(article)
             }
         } catch (e: JSONException) {
@@ -35,6 +35,6 @@ class MainBusiness {
     }
 
     fun isEmptyArticle(result: Any): Boolean {
-        return result != ""
+        return result == ""
     }
 }
