@@ -18,10 +18,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="random_image">Random Image</string>
-    <string name="txtLike">%1$d Like</string>
-    <string name="txtComment">%1$d Comment</string>
+    <string name="txtLike">%1$d </string>
+    <string name="txtComment">%1$d </string>
     <string name="txtComments">Comments</string>
-    <string name="txtShare">%1$d Share</string>
+    <string name="txtShare">%1$d </string>
     <string name="txtSearch">Search</string>
     <string name="txtErrorLoading">Error, please try again!</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>

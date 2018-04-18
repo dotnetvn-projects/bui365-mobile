@@ -31,9 +31,7 @@ class BlogBusiness {
                 article.url = jsonObject.getString("url")
                 articles.add(article)
             }
-            if (length == 0) {
-                loadEnd = true
-            }
+            loadEnd = length == 0
         } catch (e: JSONException) {
             e.printStackTrace()
         }

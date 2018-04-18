@@ -21,28 +21,21 @@
             app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/imgDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:fitsSystemWindows="true"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone"
-                    app:layout_collapseMode="parallax"
-                    tools:ignore="ContentDescription" />
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/imgDetail"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:layout_collapseMode="parallax"
+                tools:ignore="ContentDescription" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:layout_collapseMode="pin">
-
-            </android.support.v7.widget.Toolbar>
+                app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

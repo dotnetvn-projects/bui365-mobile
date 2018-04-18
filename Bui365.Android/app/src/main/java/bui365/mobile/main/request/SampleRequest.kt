@@ -3,13 +3,11 @@ package bui365.mobile.main.request
 
 import android.os.AsyncTask
 
-import java.net.URL
-
 import bui365.mobile.main.impl.AsyncTaskListener
 import bui365.mobile.main.util.Config
 import bui365.mobile.main.util.Connection
 
-class SampleRequest(private val mListener: AsyncTaskListener<String>?) : AsyncTask<String, Void, String>() {
+class SampleRequest(private val listener: AsyncTaskListener<String>?) : AsyncTask<String, Void, String>() {
 
     override fun doInBackground(vararg strings: String): String {
         var json = ""
@@ -25,14 +23,14 @@ class SampleRequest(private val mListener: AsyncTaskListener<String>?) : AsyncTa
 
     override fun onPreExecute() {
         super.onPreExecute()
-        mListener!!.onTaskPreExecute()
+        listener!!.onTaskPreExecute()
     }
 
     override fun onPostExecute(s: String) {
         super.onPostExecute(s)
-        if (mListener == null) {
+        if (listener == null) {
             return
         }
-        mListener.onTaskComplete(s)
+        listener.onTaskComplete(s)
     }
 }

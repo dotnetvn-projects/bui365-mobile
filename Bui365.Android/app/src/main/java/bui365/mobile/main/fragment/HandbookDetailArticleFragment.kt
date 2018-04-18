@@ -6,14 +6,15 @@ import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.*
-import android.webkit.WebView
 import android.widget.ImageView
-import android.widget.TextView
 import bui365.mobile.main.R
 import bui365.mobile.main.presenter.HandbookDetailArticlePresenter
 import bui365.mobile.main.view.HandbookDetailArticleView
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.fragment_blog_detail_article.*
+import kotlinx.android.synthetic.main.layout_progress_loading.*
 import org.json.JSONObject
 
 
@@ -29,9 +30,6 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
     private var collapsingToolbar: CollapsingToolbarLayout? = null
     private var appBarLayout: AppBarLayout? = null
     private var imgDetail: ImageView? = null
-    private var txtTitle: TextView? = null
-    private var txtUpdatedDate: TextView? = null
-    private var webView: WebView? = null
 
     override lateinit var presenter: HandbookDetailArticlePresenter
 
@@ -42,37 +40,32 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.loadDetailArticle(articleId)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_handbook_detail_article, container, false)
-        if (activity != null) {
-            collapsingToolbar = activity!!.findViewById(R.id.collapsingToolbar)
-            appBarLayout = activity!!.findViewById(R.id.appBarLayout)
-            imgDetail = activity!!.findViewById(R.id.imgDetail)
-        }
-        txtTitle = root.findViewById(R.id.txtTitle)
-        txtUpdatedDate = root.findViewById(R.id.txtUpdatedDate)
-        webView = root.findViewById(R.id.webView)
+        val root = inflater.inflate(R.layout.fragment_blog_detail_article, container, false)
         setHasOptionsMenu(true)
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        webView!!.settings.useWideViewPort = true
-        webView!!.settings.loadWithOverviewMode = true
-        webView!!.settings.defaultFontSize = 36
-        webView!!.settings.builtInZoomControls = true
-        webView!!.settings.setSupportZoom(true)
+        webView.settings.useWideViewPort = true
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.defaultFontSize = 36
+        webView.settings.builtInZoomControls = true
+        webView.settings.setSupportZoom(true)
+
+        if (activity != null) {
+            collapsingToolbar = activity!!.findViewById(R.id.collapsingToolbar)
+            appBarLayout = activity!!.findViewById(R.id.appBarLayout)
+            imgDetail = activity!!.findViewById(R.id.imgDetail)
+        }
         initCollapsingToolbar()
         dynamicToolbarColor()
         toolbarTextAppearance()
+
+        presenter.loadDetailArticle(articleId)
     }
 
     private fun initCollapsingToolbar() {
@@ -90,6 +83,7 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
                     collapsingToolbar!!.title = ""
                     isShow = true
                 } else {
+                    Log.e(TAG, "initCollapsingToolbar: $title")
                     collapsingToolbar!!.title = title
                 }
             }
@@ -118,7 +112,7 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
             updatedDate = jsonObject.getString("updatedDate")
             url = jsonObject.getString("url")
 
-            webView!!.loadData(content, "text/html", "utf-8")
+            webView.loadData(content, "text/html", "utf-8")
 
             if (image != null && image != "") {
                 imgDetail!!.visibility = View.VISIBLE
@@ -127,8 +121,8 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
                 imgDetail!!.visibility = View.GONE
             }
 
-            txtTitle!!.text = title
-            txtUpdatedDate!!.text = updatedDate
+            txtTitle.text = title
+            txtUpdatedDate.text = updatedDate
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -145,11 +139,11 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
     }
 
     override fun showLoading() {
-
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-
+        progressBar.visibility = View.GONE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -169,6 +163,7 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
     companion object {
 
         private const val ARTICLE_ID = "articleId"
+        private const val TAG = "kyo"
 
         fun newInstance(articleId: String) = HandbookDetailArticleFragment().apply {
             arguments = Bundle().apply {

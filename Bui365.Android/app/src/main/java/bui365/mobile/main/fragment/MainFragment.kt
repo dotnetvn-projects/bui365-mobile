@@ -10,7 +10,9 @@ import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
-import android.widget.*
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import bui365.mobile.main.R
 import bui365.mobile.main.activity.BlogActivity
 import bui365.mobile.main.activity.HandbookDetailArticleActivity
@@ -20,6 +22,7 @@ import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.presenter.MainActivityPresenter
 import bui365.mobile.main.util.showSnackBarAction
 import bui365.mobile.main.view.MainActivityView
+import kotlinx.android.synthetic.main.fragment_main_activity.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -28,12 +31,9 @@ import kotlin.collections.ArrayList
 
 class MainFragment : Fragment(), MainActivityView {
 
+
     override lateinit var presenter: MainActivityPresenter
-    private lateinit var btnHandbook: Button
-    private lateinit var btnBlog: Button
-    private lateinit var btnFavorite: Button
-    private lateinit var imgLogo: ImageView
-    private lateinit var mPager: ViewPager
+    private lateinit var viewPager: ViewPager
     private lateinit var txtErrorLoading: TextView
     private lateinit var progressBar: ProgressBar
     private var articles: ArrayList<Article> = ArrayList()
@@ -63,18 +63,10 @@ class MainFragment : Fragment(), MainActivityView {
         with(root) {
             metrics = resources.displayMetrics
             if (activity != null) {
-                mPager = activity!!.findViewById(R.id.mPager)
+                viewPager = activity!!.findViewById(R.id.viewPager)
                 txtErrorLoading = activity!!.findViewById(R.id.txtErrorLoading)
                 progressBar = activity!!.findViewById(R.id.progressBar)
             }
-            btnHandbook = (root.findViewById<Button>(R.id.btnHandbook)).also {
-                it.setOnClickListener { presenter.openTaskDetails(it.id) }
-            }
-            btnBlog = (root.findViewById<Button>(R.id.btnBlog)).also {
-                it.setOnClickListener { presenter.openTaskDetails(it.id) }
-            }
-            btnFavorite = root.findViewById(R.id.btnFavorite)
-            imgLogo = root.findViewById(R.id.imgLogo)
         }
         return root
     }
@@ -82,11 +74,15 @@ class MainFragment : Fragment(), MainActivityView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mPager.layoutParams.width = metrics.widthPixels
-        mPager.layoutParams.height = metrics.heightPixels / 2
+        btnHandbook.setOnClickListener { presenter.openTaskDetails(it.id) }
+        btnBlog.setOnClickListener { presenter.openTaskDetails(it.id) }
+        btnFavorite.setOnClickListener { }
+
+        viewPager.layoutParams.width = metrics.widthPixels
+        viewPager.layoutParams.height = metrics.heightPixels / 2
 
         slidingAdapter = MainSlidingAdapter(activity!!, articles, mainItemListener)
-        mPager.adapter = slidingAdapter
+        viewPager.adapter = slidingAdapter
 
         imgLogo.layoutParams.width = metrics.widthPixels / 2
 
@@ -95,7 +91,7 @@ class MainFragment : Fragment(), MainActivityView {
             if (currentPage == articles.size) {
                 currentPage = 0
             }
-            mPager.setCurrentItem(currentPage++, true)
+            viewPager.setCurrentItem(currentPage++, true)
         }
         Timer().schedule(object : TimerTask() {
             override fun run() {

@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.annotation.RequiresApi
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,20 +16,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.FrameLayout
-import android.widget.ProgressBar
 import bui365.mobile.main.R
 import bui365.mobile.main.presenter.CommentsPresenter
 import bui365.mobile.main.view.CommentsView
+import kotlinx.android.synthetic.main.fragment_comments.*
+import kotlinx.android.synthetic.main.layout_progress_loading.*
 
 
 class CommentsFragment : Fragment(), CommentsView {
 
     override lateinit var presenter: CommentsPresenter
     private lateinit var url: String
-    private lateinit var webComment: WebView
     private lateinit var webViewPop: WebView
-    private lateinit var mContainer: ConstraintLayout
-    private lateinit var progressBar: ProgressBar
 
     companion object {
 
@@ -60,9 +57,6 @@ class CommentsFragment : Fragment(), CommentsView {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_comments, container, false)
-        webComment = root.findViewById(R.id.webComment)
-        mContainer = root.findViewById(R.id.mContainer)
-        progressBar = root.findViewById(R.id.progressBar)
         return root
     }
 

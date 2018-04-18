@@ -40,6 +40,6 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
 
     companion object {
 
-        private val TAG = "MyFirebaseIIDService"
+        private const val TAG = "MyFirebaseIIDService"
     }
 }

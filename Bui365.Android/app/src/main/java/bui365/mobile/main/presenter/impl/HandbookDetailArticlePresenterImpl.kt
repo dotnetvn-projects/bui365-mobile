@@ -10,12 +10,12 @@ import com.google.common.base.Preconditions.checkNotNull
 
 class HandbookDetailArticlePresenterImpl(detailArticleView: HandbookDetailArticleView) :
         HandbookDetailArticlePresenter {
-    private val mDetailArticleView: HandbookDetailArticleView =
+    private val detailArticleView: HandbookDetailArticleView =
             checkNotNull(detailArticleView, "Detail Article View cannot null")
-    private val mDetailArticleBusiness: HandbookDetailArticleBusiness = HandbookDetailArticleBusiness()
+    private val detailArticleBusiness: HandbookDetailArticleBusiness = HandbookDetailArticleBusiness()
 
     init {
-        mDetailArticleView.presenter = this
+        this.detailArticleView.presenter = this
     }
 
     override fun start() {
@@ -29,16 +29,16 @@ class HandbookDetailArticlePresenterImpl(detailArticleView: HandbookDetailArticl
         HandbookDetailArticleRequest(object : AsyncTaskListener<Any> {
 
             override fun onTaskPreExecute() {
-                mDetailArticleView.showLoading()
+                detailArticleView.showLoading()
             }
 
             override fun onTaskComplete(result: Any) {
-                mDetailArticleView.hideLoading()
-                if (mDetailArticleBusiness.handleData(result)) {
-                    mDetailArticleView.hideError()
-                    mDetailArticleView.showResult(result)
+                detailArticleView.hideLoading()
+                if (detailArticleBusiness.handleData(result)) {
+                    detailArticleView.hideError()
+                    detailArticleView.showResult(result)
                 } else {
-                    mDetailArticleView.showError()
+                    detailArticleView.showError()
                 }
             }
         }, articleId).execute()

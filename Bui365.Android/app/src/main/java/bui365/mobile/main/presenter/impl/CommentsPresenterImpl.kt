@@ -5,15 +5,15 @@ import bui365.mobile.main.view.CommentsView
 import com.google.common.base.Preconditions.checkNotNull
 
 class CommentsPresenterImpl(commentsView: CommentsView) : CommentsPresenter {
-    private val mCommentsView: CommentsView = checkNotNull(commentsView, "Comments View cannot be null")
+    private val commentsView: CommentsView = checkNotNull(commentsView, "Comments View cannot be null")
 
     init {
-        mCommentsView.presenter = this
+        this.commentsView.presenter = this
     }
 
     override fun start() {
-        mCommentsView.showLoading()
-        mCommentsView.loadComments()
+        commentsView.showLoading()
+        commentsView.loadComments()
     }
 
 }

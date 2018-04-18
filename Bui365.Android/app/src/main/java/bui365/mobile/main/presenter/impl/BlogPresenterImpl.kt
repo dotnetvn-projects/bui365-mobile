@@ -2,6 +2,7 @@ package bui365.mobile.main.presenter.impl
 
 
 import android.net.Uri
+import android.util.Log
 import bui365.mobile.main.business.BlogBusiness
 import bui365.mobile.main.impl.AsyncTaskListener
 import bui365.mobile.main.model.pojo.Article
@@ -16,24 +17,24 @@ import com.facebook.share.widget.ShareDialog
 import com.google.common.base.Preconditions.checkNotNull
 
 class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
-    private val mBlogView: BlogView = checkNotNull(blogView, "blogView cannot be null")
-    private val mBlogBusiness: BlogBusiness = BlogBusiness()
+    private val blogView: BlogView = checkNotNull(blogView, "blogView cannot be null")
+    private val blogBusiness: BlogBusiness = BlogBusiness()
     private var articles: ArrayList<Article> = ArrayList()
     private var facebookPOJO: FacebookPOJO = FacebookPOJO()
 
-    private var mFirstLoad = true
+    private var isFirstLoad = true
 
     init {
-        mBlogView.presenter = this
+        this.blogView.presenter = this
     }
 
     override fun start() {
         loadTask(false, 0)
     }
 
-    override fun loadTask(forceUpdate: Boolean, index: Int) {
-        loadTask(forceUpdate || mFirstLoad, true, index)
-        mFirstLoad = false
+    override fun loadTask(forceUpdate: Boolean, start: Int) {
+        loadTask(forceUpdate || isFirstLoad, true, start)
+        isFirstLoad = false
     }
 
     override fun loadFacebookSdk(url: String) {
@@ -43,8 +44,11 @@ class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
             }
 
             override fun onTaskComplete(result: Any) {
-                facebookPOJO = mBlogBusiness.handleFacebookSdk(result)
-                mBlogView.showFacebookSdk(facebookPOJO)
+                Log.e("kyo", "onTaskComplete: $result")
+                if (result != "") {
+                    facebookPOJO = blogBusiness.handleFacebookSdk(result)
+                    blogView.showFacebookSdk(facebookPOJO)
+                }
             }
 
         }, url).execute()
@@ -56,16 +60,16 @@ class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
                     .setContentUrl(Uri.parse(url))
                     .setShareHashtag(ShareHashtag.Builder().setHashtag("#Bui365").build())
                     .build()
-            mBlogView.showShareArticle(content)
+            blogView.showShareArticle(content)
         }
     }
 
     override fun loadComment(url: String) {
-        mBlogView.showComment(url)
+        blogView.showComment(url)
     }
 
     override fun loadDetailArticle(id: String) {
-        mBlogView.showDetailArticle(id)
+        blogView.showDetailArticle(id)
     }
 
     /**
@@ -75,7 +79,7 @@ class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
      */
     private fun loadTask(forceUpdate: Boolean, showLoadingUi: Boolean, index: Int) {
         if (showLoadingUi) {
-            mBlogView.showLoading()
+            blogView.showLoading()
         }
         if (forceUpdate) {
             //refresh method
@@ -83,18 +87,18 @@ class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
 
         BlogArticleRequest(object : AsyncTaskListener<String> {
             override fun onTaskPreExecute() {
-                mBlogView.showLoading()
+                blogView.showLoading()
             }
 
             override fun onTaskComplete(result: Any) {
-                mBlogView.hideLoading()
-                if (!mBlogBusiness.isEmptyArticle(result)) {
-                    mBlogView.hideError()
-                    articles = mBlogBusiness.handleData(result)
-                    mBlogView.showResult(articles, mBlogBusiness.loadEnd)
+                blogView.hideLoading()
+                if (!blogBusiness.isEmptyArticle(result)) {
+                    blogView.hideError()
+                    articles = blogBusiness.handleData(result)
+                    blogView.showResult(articles, blogBusiness.loadEnd)
                     articles.clear()
                 } else {
-                    mBlogView.showError()
+                    blogView.showError()
                 }
             }
 

@@ -5,7 +5,7 @@ import bui365.mobile.main.impl.AsyncTaskListener
 import bui365.mobile.main.util.Connection
 
 
-class FacebookUrlRequest(private val mListener: AsyncTaskListener<String>?, private val articleUrl: String) : AsyncTask<String, Void, Any>() {
+class FacebookUrlRequest(private val listener: AsyncTaskListener<String>?, private val articleUrl: String) : AsyncTask<String, Void, Any>() {
     override fun doInBackground(vararg p0: String?): Any {
         var json = ""
         try {
@@ -20,14 +20,14 @@ class FacebookUrlRequest(private val mListener: AsyncTaskListener<String>?, priv
 
     override fun onPreExecute() {
         super.onPreExecute()
-        mListener!!.onTaskPreExecute()
+        listener!!.onTaskPreExecute()
     }
 
     override fun onPostExecute(s: Any) {
         super.onPostExecute(s)
-        if (mListener == null) {
+        if (listener == null) {
             return
         }
-        mListener.onTaskComplete(s)
+        listener.onTaskComplete(s)
     }
 }

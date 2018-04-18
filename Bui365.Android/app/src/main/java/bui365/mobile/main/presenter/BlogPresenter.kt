@@ -5,7 +5,7 @@ import bui365.mobile.main.BasePresenter
 
 interface BlogPresenter : BasePresenter {
 
-    fun loadTask(forceUpdate: Boolean, index: Int)
+    fun loadTask(forceUpdate: Boolean, start: Int)
 
     fun loadFacebookSdk(url: String)
 

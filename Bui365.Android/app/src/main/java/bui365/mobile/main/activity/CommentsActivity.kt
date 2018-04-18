@@ -7,17 +7,14 @@ import bui365.mobile.main.R
 import bui365.mobile.main.fragment.CommentsFragment
 import bui365.mobile.main.presenter.impl.CommentsPresenterImpl
 import bui365.mobile.main.util.addFragmentToActivity
+import kotlinx.android.synthetic.main.activity_comments.*
 
 class CommentsActivity : AppCompatActivity() {
-
-    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
 
-        //set up toolbar
-        toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         title = getString(R.string.txtComments)
         if (supportActionBar != null) {

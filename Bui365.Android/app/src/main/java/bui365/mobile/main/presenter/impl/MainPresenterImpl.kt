@@ -10,13 +10,13 @@ import bui365.mobile.main.view.MainActivityView
 import com.google.common.base.Preconditions.checkNotNull
 
 class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresenter {
-    private val mMainView: MainActivityView = checkNotNull(mainActivityView, "mainView cannot be null")
-    private val mMainBusiness: MainBusiness = MainBusiness()
+    private val mainActivityView: MainActivityView = checkNotNull(mainActivityView, "mainActivityView cannot be null")
+    private val mainBusiness: MainBusiness = MainBusiness()
     private var articles: ArrayList<Article> = ArrayList()
-    private var mFirstLoad = true
+    private var isFirstLoad = true
 
     init {
-        mMainView.presenter = this
+        this.mainActivityView.presenter = this
     }
 
     override fun start() {
@@ -24,8 +24,8 @@ class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresen
     }
 
     override fun loadTask(forceUpdate: Boolean) {
-        loadTask(forceUpdate || mFirstLoad, true)
-        mFirstLoad = false
+        loadTask(forceUpdate || isFirstLoad, true)
+        isFirstLoad = false
     }
 
     /**
@@ -34,7 +34,7 @@ class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresen
      */
     private fun loadTask(forceUpdate: Boolean, showLoadingUi: Boolean) {
         if (showLoadingUi) {
-            mMainView.showLoading()
+            mainActivityView.showLoading()
         }
         if (forceUpdate) {
             //refresh method
@@ -43,17 +43,17 @@ class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresen
         //Call random image api request
         SampleRequest(object : AsyncTaskListener<String> {
             override fun onTaskPreExecute() {
-                mMainView.showLoading()
+                mainActivityView.showLoading()
             }
 
             override fun onTaskComplete(result: Any) {
-                mMainView.hideLoading()
-                if (!mMainBusiness.isEmptyArticle(result)) {
-                    mMainView.hideError()
-                    articles = mMainBusiness.handleData(result)
-                    mMainView.showResult(articles)
+                mainActivityView.hideLoading()
+                if (!mainBusiness.isEmptyArticle(result)) {
+                    mainActivityView.hideError()
+                    articles = mainBusiness.handleData(result)
+                    mainActivityView.showResult(articles)
                 } else {
-                    mMainView.showError()
+                    mainActivityView.showError()
                 }
             }
 
@@ -61,6 +61,6 @@ class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresen
     }
 
     override fun openTaskDetails(id: Int) {
-        mMainView.showTaskDetailUi(id)
+        mainActivityView.showTaskDetailUi(id)
     }
 }

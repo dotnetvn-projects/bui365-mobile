@@ -2,21 +2,20 @@ package bui365.mobile.main.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import bui365.mobile.main.R
-import bui365.mobile.main.presenter.impl.BlogPresenterImpl
 import bui365.mobile.main.fragment.BlogFragment
+import bui365.mobile.main.presenter.impl.BlogPresenterImpl
 import bui365.mobile.main.util.addFragmentToActivity
+import kotlinx.android.synthetic.main.activity_blog.*
 
 class BlogActivity : AppCompatActivity() {
 
-    private lateinit var mBlogPresenterImpl: BlogPresenterImpl
+    private lateinit var blogPresenterImpl: BlogPresenterImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_handbook)
+        setContentView(R.layout.activity_blog)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         title = getString(R.string.title_blog)
         if (supportActionBar != null) {
@@ -28,7 +27,7 @@ class BlogActivity : AppCompatActivity() {
             addFragmentToActivity(it, R.id.contentFrame)
         }
 
-        mBlogPresenterImpl = BlogPresenterImpl(handbookFragment)
+        blogPresenterImpl = BlogPresenterImpl(handbookFragment)
     }
 
     override fun onSupportNavigateUp(): Boolean {

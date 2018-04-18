@@ -6,18 +6,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import bui365.mobile.main.R
 import bui365.mobile.main.activity.CommentsActivity
 import bui365.mobile.main.activity.HandbookDetailArticleActivity
 import bui365.mobile.main.adapter.BlogArticleAdapter
+import bui365.mobile.main.graphic.DividerItemDecorator
 import bui365.mobile.main.impl.HandbookArticleItemListener
 import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.model.pojo.EmptyArticle
@@ -31,6 +30,9 @@ import com.facebook.FacebookException
 import com.facebook.share.Sharer
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.widget.ShareDialog
+import kotlinx.android.synthetic.main.fragment_blog.*
+import kotlinx.android.synthetic.main.layout_error_loading.*
+import kotlinx.android.synthetic.main.layout_progress_loading.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -38,15 +40,11 @@ import java.net.UnknownHostException
 class BlogFragment : Fragment(), BlogView {
 
     override lateinit var presenter: BlogPresenter
-    private var swipeRefresh: SwipeRefreshLayout? = null
-    private var rcvHandbookArticle: RecyclerView? = null
-    private var layoutManager: LinearLayoutManager? = null
-    private var mArticleList: ArrayList<Article> = ArrayList()
-    private var articleAdapter: BlogArticleAdapter? = null
-    private var txtErrorLoading: TextView? = null
-    private var progressBar: ProgressBar? = null
-    private var callbackManager: CallbackManager? = null
-    private var shareDialog: ShareDialog? = null
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var callbackManager: CallbackManager
+    private lateinit var shareDialog: ShareDialog
+    private lateinit var articleAdapter: BlogArticleAdapter
+    private var articleList: ArrayList<Article> = ArrayList()
 
     private var start = 0
     private var loading = false
@@ -58,18 +56,18 @@ class BlogFragment : Fragment(), BlogView {
     private lateinit var handler: Handler
     private val exception: Exception? = null
 
-    private var mArticleItemListener: HandbookArticleItemListener = object : HandbookArticleItemListener {
+    private var articleItemListener: HandbookArticleItemListener = object : HandbookArticleItemListener {
 
         override fun onImageClick(position: Int) {
-            presenter.loadDetailArticle(mArticleList[position].id!!)
+            presenter.loadDetailArticle(articleList[position].id!!)
         }
 
         override fun onCommentClick(position: Int) {
-            presenter.loadComment(mArticleList[position].url!!)
+            presenter.loadComment(articleList[position].url!!)
         }
 
         override fun onShareClick(position: Int) {
-            presenter.shareArticle(mArticleList[position].url!!)
+            presenter.shareArticle(articleList[position].url!!)
         }
     }
 
@@ -77,7 +75,7 @@ class BlogFragment : Fragment(), BlogView {
         super.onCreate(savedInstanceState)
         callbackManager = CallbackManager.Factory.create()
         shareDialog = ShareDialog(this)
-        shareDialog!!.registerCallback(callbackManager, object : FacebookCallback<Sharer.Result> {
+        shareDialog.registerCallback(callbackManager, object : FacebookCallback<Sharer.Result> {
             override fun onSuccess(result: Sharer.Result?) {
                 Toast.makeText(activity, getString(R.string.txtShareSuccess), Toast.LENGTH_SHORT).show()
             }
@@ -96,18 +94,10 @@ class BlogFragment : Fragment(), BlogView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_handbook, container, false)
-        swipeRefresh = root.findViewById(R.id.swipeRefresh)
-        mArticleList = ArrayList()
-        rcvHandbookArticle = root.findViewById(R.id.rcvHandbookArticle)
+        val root = inflater.inflate(R.layout.fragment_blog, container, false)
+        articleList = ArrayList()
+        articleAdapter = BlogArticleAdapter(activity!!, articleList, articleItemListener)
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        rcvHandbookArticle!!.layoutManager = layoutManager
-        rcvHandbookArticle!!.isNestedScrollingEnabled = false
-        articleAdapter = BlogArticleAdapter(activity!!, mArticleList, mArticleItemListener)
-        rcvHandbookArticle!!.adapter = articleAdapter
-        txtErrorLoading = root.findViewById(R.id.txtErrorLoading)
-        progressBar = root.findViewById(R.id.progressBar)
-        presenter.start()
         setHasOptionsMenu(true)
         return root
     }
@@ -115,32 +105,39 @@ class BlogFragment : Fragment(), BlogView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        swipeRefresh!!.setOnRefreshListener {
+        rcvBlogArticle.layoutManager = layoutManager
+        rcvBlogArticle.isNestedScrollingEnabled = false
+
+        val divider = DividerItemDecorator(ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.divider)!!)
+        rcvBlogArticle.addItemDecoration(divider)
+        rcvBlogArticle.adapter = articleAdapter
+
+        swipeRefresh.setOnRefreshListener {
             swipeRefresh!!.isRefreshing = true
-            mArticleList.clear()
-            articleAdapter!!.notifyDataSetChanged()
+            articleList.clear()
+            articleAdapter.notifyDataSetChanged()
             start = 0
             loadEnd = false
             loading = false
             presenter.start()
         }
 
-        rcvHandbookArticle!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rcvBlogArticle!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                visibleItemCount = layoutManager!!.childCount
-                totalItemCount = layoutManager!!.itemCount
-                firstVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
+                visibleItemCount = layoutManager.childCount
+                totalItemCount = layoutManager.itemCount
+                firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
                 if (dy > 0 && !loading && !loadEnd
-                        && totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
+                        && (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold)) {
                     loading = true
                     val emptyArticle = EmptyArticle()
-                    mArticleList.add(emptyArticle)
-                    articleAdapter!!.notifyItemInserted(mArticleList.size - 1)
+                    articleList.add(emptyArticle)
+                    articleAdapter.notifyItemInserted(articleList.size - 1)
                     handler = Handler()
                     handler.postDelayed({
-                        mArticleList.removeAt(mArticleList.size - 1)
-                        articleAdapter!!.notifyItemRemoved(mArticleList.size)
+                        articleList.removeAt(articleList.size - 1)
+                        articleAdapter.notifyItemRemoved(articleList.size)
                         start++
                         presenter.loadTask(false, start)
                     }, 1000)
@@ -148,26 +145,28 @@ class BlogFragment : Fragment(), BlogView {
             }
         })
 
+        presenter.start()
     }
 
     override fun showResult(articles: List<Article>, loadEnd: Boolean) {
         swipeRefresh!!.isRefreshing = false
         for (article in articles) {
-            mArticleList.add(article)
+            articleList.add(article)
             presenter.loadFacebookSdk(article.url!!)
         }
-        articleAdapter!!.notifyDataSetChanged()
+        articleAdapter.notifyDataSetChanged()
         loading = false
         this.loadEnd = loadEnd
     }
 
     override fun showFacebookSdk(facebookPOJO: FacebookPOJO) {
-        for (article in mArticleList) {
-            if (article.url!! == facebookPOJO.id) {
+        for (article in articleList) {
+            if (article.url == facebookPOJO.id) {
                 article.facebookPOJO = facebookPOJO
+                break
             }
         }
-        articleAdapter!!.notifyDataSetChanged()
+        articleAdapter.notifyDataSetChanged()
     }
 
     private fun showError(exception: Exception?) {
@@ -190,7 +189,7 @@ class BlogFragment : Fragment(), BlogView {
 
     override fun showError() {
         showError(exception)
-        txtErrorLoading!!.visibility = View.VISIBLE
+        txtErrorLoading.visibility = View.VISIBLE
         view!!.showSnackBarAction(getString(R.string.connection_failed), Snackbar.LENGTH_INDEFINITE) {
             setAction(getString(R.string.retry)) {
                 hideError()
@@ -200,19 +199,19 @@ class BlogFragment : Fragment(), BlogView {
     }
 
     override fun hideError() {
-        txtErrorLoading!!.visibility = View.GONE
+        txtErrorLoading.visibility = View.GONE
     }
 
     override fun showLoading() {
-        progressBar!!.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        progressBar!!.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
     override fun showShareArticle(content: ShareLinkContent) {
-        shareDialog!!.show(content)
+        shareDialog.show(content)
     }
 
     override fun showComment(url: String) {
@@ -240,6 +239,6 @@ class BlogFragment : Fragment(), BlogView {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        callbackManager!!.onActivityResult(requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 }// Required empty public constructor
