@@ -37,7 +37,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 
-class BlogFragment : Fragment(), BlogView {
+class BlogFragment : Fragment(), BlogView, HandbookArticleItemListener {
 
     override lateinit var presenter: BlogPresenter
     private lateinit var layoutManager: LinearLayoutManager
@@ -55,21 +55,6 @@ class BlogFragment : Fragment(), BlogView {
     private var totalItemCount: Int = 0
     private lateinit var handler: Handler
     private val exception: Exception? = null
-
-    private var articleItemListener: HandbookArticleItemListener = object : HandbookArticleItemListener {
-
-        override fun onImageClick(position: Int) {
-            presenter.loadDetailArticle(articleList[position].id!!)
-        }
-
-        override fun onCommentClick(position: Int) {
-            presenter.loadComment(articleList[position].url!!)
-        }
-
-        override fun onShareClick(position: Int) {
-            presenter.shareArticle(articleList[position].url!!)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +81,7 @@ class BlogFragment : Fragment(), BlogView {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_blog, container, false)
         articleList = ArrayList()
-        articleAdapter = BlogArticleAdapter(activity!!, articleList, articleItemListener)
+        articleAdapter = BlogArticleAdapter(activity!!, articleList, this)
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         setHasOptionsMenu(true)
         return root
@@ -128,6 +113,12 @@ class BlogFragment : Fragment(), BlogView {
                 visibleItemCount = layoutManager.childCount
                 totalItemCount = layoutManager.itemCount
                 firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
+
+                /** load more items if user scrolls down
+                 * loadEnd: return true if there is no more item to display
+                 * firstVisibleItem + visibleThreshold: ready to load more items if user is in the position
+                 * start: the index to display the next items
+                 */
                 if (dy > 0 && !loading && !loadEnd
                         && (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold)) {
                     loading = true
@@ -159,6 +150,7 @@ class BlogFragment : Fragment(), BlogView {
         this.loadEnd = loadEnd
     }
 
+    //display numbers of view, comment, share from Facebook SDK
     override fun showFacebookSdk(facebookPOJO: FacebookPOJO) {
         for (article in articleList) {
             if (article.url == facebookPOJO.id) {
@@ -224,6 +216,18 @@ class BlogFragment : Fragment(), BlogView {
         Intent(activity, HandbookDetailArticleActivity::class.java).apply {
             putExtra("articleId", id)
         }.also { startActivity(it) }
+    }
+
+    override fun onImageClick(article: Article) {
+        presenter.loadDetailArticle(article.id!!)
+    }
+
+    override fun onCommentClick(article: Article) {
+        presenter.loadComment(article.url!!)
+    }
+
+    override fun onShareClick(article: Article) {
+        presenter.shareArticle(article.url!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

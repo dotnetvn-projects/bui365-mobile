@@ -2,12 +2,14 @@ package bui365.mobile.main.adapter
 
 
 import android.content.Context
+import android.databinding.DataBindingUtil
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import bui365.mobile.main.R
+import bui365.mobile.main.databinding.ItemBlogArticleBinding
 import bui365.mobile.main.impl.HandbookArticleItemListener
 import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.model.pojo.EmptyArticle
@@ -23,14 +25,19 @@ import kotlinx.android.synthetic.main.item_progress.view.*
 import java.util.*
 
 class BlogArticleAdapter(private val context: Context, private val articles: ArrayList<Article>, private val articleItemListener: HandbookArticleItemListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val VIEW_ITEM = 0
-    private val VIEW_LOADING = 1
+
+    companion object {
+        private const val VIEW_ITEM = 0
+        private const val VIEW_LOADING = 1
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val layoutInflater = LayoutInflater.from(context)
         val vh: RecyclerView.ViewHolder
         vh = if (viewType == VIEW_ITEM) {
-            val v = LayoutInflater.from(context).inflate(R.layout.item_blog_article, parent, false)
-            ItemHolder(v)
+            val binding: ItemBlogArticleBinding =
+                    DataBindingUtil.inflate(layoutInflater, R.layout.item_blog_article, parent, false)
+            ItemHolder(binding)
         } else {
             val v = LayoutInflater.from(context).inflate(R.layout.item_progress, parent, false)
             ProgressHolder(v)
@@ -58,40 +65,32 @@ class BlogArticleAdapter(private val context: Context, private val articles: Arr
         return position.toLong()
     }
 
-    inner class ItemHolder(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ItemHolder(private val binding: ItemBlogArticleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindData(article: Article) {
-            with(article) {
-                Glide.with(context).load(R.drawable.da_lat)
-                        .apply(RequestOptions.bitmapTransform(CircleCrop()).placeholder(R.drawable.icon_mobile))
-                        .into(itemView.imgAvatar)
-                itemView.txtName.text = article.title
-                itemView.txtTime.text = article.updatedDate
-                Glide.with(context).load(article.image)
-                        .listener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                                itemView.progressCircle.visibility = View.GONE
-                                return false
-                            }
+            binding.article = article
+            Glide.with(context).load(R.drawable.da_lat)
+                    .apply(RequestOptions.bitmapTransform(CircleCrop()).placeholder(R.drawable.icon_mobile))
+                    .into(itemView.imgAvatar)
+            Glide.with(context).load(article.image)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+                            itemView.progressCircle.visibility = View.GONE
+                            return false
+                        }
 
-                            override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                                itemView.progressCircle.visibility = View.GONE
-                                return false
-                            }
-                        })
-                        .into(itemView.imgPicture)
-                itemView.txtDescription.text = article.description
-                itemView.txtLike.text = context.getString(R.string.txtLike, article.facebookPOJO.likes.summary.likeCount)
-                itemView.txtComment.text = context.getString(R.string.txtComment, article.facebookPOJO.share.commentCount)
-                itemView.txtShare.text = context.getString(R.string.txtShare, article.facebookPOJO.share.shareCount)
-                itemView.imgPicture.setOnClickListener { articleItemListener.onImageClick(adapterPosition) }
-                itemView.txtComment.setOnClickListener { articleItemListener.onCommentClick(adapterPosition) }
-                itemView.txtShare.setOnClickListener { articleItemListener.onShareClick(adapterPosition) }
-            }
+                        override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                            itemView.progressCircle.visibility = View.GONE
+                            return false
+                        }
+                    })
+                    .into(itemView.imgPicture)
+            binding.executePendingBindings()
+            binding.listener = articleItemListener
         }
 
     }
 
-    private inner class ProgressHolder internal constructor(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ProgressHolder internal constructor(view: View) : RecyclerView.ViewHolder(view) {
         fun bindData() {
             itemView.progressBar.isIndeterminate = true
         }

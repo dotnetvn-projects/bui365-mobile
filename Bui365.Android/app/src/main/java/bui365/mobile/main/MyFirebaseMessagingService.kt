@@ -16,6 +16,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     /**
      * display notification
      */
+
     override fun onMessageReceived(rm: RemoteMessage?) {
         createNotification(rm!!.notification!!.body)
     }

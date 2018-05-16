@@ -22,12 +22,13 @@ class BlogActivity : AppCompatActivity() {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }
 
-        val handbookFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
+        //initialize BlogFragment then add it to the Activity
+        val blogFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
                 as BlogFragment? ?: BlogFragment.newInstance().also {
             addFragmentToActivity(it, R.id.contentFrame)
         }
 
-        blogPresenterImpl = BlogPresenterImpl(handbookFragment)
+        blogPresenterImpl = BlogPresenterImpl(blogFragment)
     }
 
     override fun onSupportNavigateUp(): Boolean {

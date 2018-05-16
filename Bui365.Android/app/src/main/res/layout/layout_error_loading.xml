@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/txtErrorLoading"
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:drawableTop="@drawable/ic_refresh_black_24px"
-        android:gravity="center"
-        android:text="@string/txtErrorLoading"
-        android:textColor="@color/primary_text"
-        android:visibility="gone" />
+        android:layout_height="match_parent">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/txtErrorLoading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableTop="@{@drawable/ic_refresh_black_24px}"
+            android:gravity="center"
+            android:text="@string/txtErrorLoading"
+            android:textColor="@color/primary_text"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</layout>

@@ -1,10 +1,12 @@
 package bui365.mobile.main.impl
 
+import bui365.mobile.main.model.pojo.Article
+
 
 interface HandbookArticleItemListener {
-    fun onImageClick(position: Int)
+    fun onImageClick(article: Article)
 
-    fun onCommentClick(position: Int)
+    fun onCommentClick(article: Article)
 
-    fun onShareClick(position: Int)
+    fun onShareClick(article: Article)
 }
