@@ -2,26 +2,36 @@ package bui365.mobile.main.presenter
 
 import android.util.Log
 import bui365.mobile.main.api.Bui365Api
+import bui365.mobile.main.business.SearchArticleBusiness
 import bui365.mobile.main.contract.SearchArticleContract
 import com.google.common.base.Preconditions
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class SearchArticlePresenterImpl(searchView: SearchArticleContract.View) : SearchArticleContract.Presenter {
 
     private val searchView = Preconditions.checkNotNull(searchView, "blogView cannot be null")
-    private val bui365Api by lazy {
-        Bui365Api.create()
-    }
+    private val searchArticleBusiness = SearchArticleBusiness()
+    private val compositeDisposable: CompositeDisposable
 
     init {
         this.searchView.presenter = this
+        compositeDisposable = CompositeDisposable()
+    }
+
+    override fun subscribe() {
+        searchView.hideError()
+    }
+
+    override fun unsubscribe() {
+        compositeDisposable.clear()
     }
 
     override fun getArticles(search: String) {
-        Log.e("kyo", "getArticles: $search")
         searchView.showLoading()
-        bui365Api.searchArticles(search).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+
+        //using retrofit and rx java 2 to get search result
+        compositeDisposable.clear()
+        val disposable = searchArticleBusiness.searchArticles(search)
                 .subscribe({ articles ->
                     searchView.hideLoading()
                     searchView.hideError()
@@ -31,9 +41,7 @@ class SearchArticlePresenterImpl(searchView: SearchArticleContract.View) : Searc
                     searchView.showError()
                     Log.e("kyo", "getArticles: " + throwable.message)
                 })
-    }
 
-    override fun start() {
-        searchView.hideError()
+        compositeDisposable.add(disposable)
     }
 }

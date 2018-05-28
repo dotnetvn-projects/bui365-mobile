@@ -10,9 +10,11 @@ class CommentsPresenterImpl(commentsView: CommentsContract.View) : CommentsContr
         this.commentsView.presenter = this
     }
 
-    override fun start() {
+    override fun subscribe() {
         commentsView.showLoading()
         commentsView.loadComments()
     }
 
+    override fun unsubscribe() {
+    }
 }

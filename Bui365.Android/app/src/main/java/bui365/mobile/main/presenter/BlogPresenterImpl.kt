@@ -8,26 +8,28 @@ import bui365.mobile.main.contract.BlogContract
 import bui365.mobile.main.impl.AsyncTaskListener
 import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.model.pojo.FacebookPOJO
-import bui365.mobile.main.request.BlogArticleRequest
 import bui365.mobile.main.request.FacebookUrlRequest
 import com.facebook.share.model.ShareHashtag
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.widget.ShareDialog
 import com.google.common.base.Preconditions.checkNotNull
+import io.reactivex.disposables.CompositeDisposable
 
 class BlogPresenterImpl(blogView: BlogContract.View) : BlogContract.Presenter {
     private val blogView: BlogContract.View = checkNotNull(blogView, "blogView cannot be null")
     private val blogBusiness: BlogBusiness = BlogBusiness()
     private var articles: ArrayList<Article> = ArrayList()
     private var facebookPOJO: FacebookPOJO = FacebookPOJO()
+    private val compositeDisposable: CompositeDisposable
 
     private var isFirstLoad = true
 
     init {
         this.blogView.presenter = this
+        compositeDisposable = CompositeDisposable()
     }
 
-    override fun start() {
+    override fun subscribe() {
         loadTask(false, 0)
     }
 
@@ -84,24 +86,27 @@ class BlogPresenterImpl(blogView: BlogContract.View) : BlogContract.Presenter {
             //refresh method
         }
 
-        BlogArticleRequest(object : AsyncTaskListener<String> {
-            override fun onTaskPreExecute() {
-                blogView.showLoading()
-            }
-
-            override fun onTaskComplete(result: Any) {
-                blogView.hideLoading()
-                if (!blogBusiness.isEmptyArticle(result)) {
+        //using retrofit with rx java 2 to get list of article
+        compositeDisposable.clear()
+        val disposable = blogBusiness.getArticles(index)
+                .subscribe({ articles ->
+                    Log.e("blog", "subscribe: $articles")
+                    var loadEnd = false
+                    if (articles.isEmpty()) {
+                        loadEnd = true
+                    }
+                    blogView.hideLoading()
                     blogView.hideError()
-                    articles = blogBusiness.handleData(result)
-                    blogView.showResult(articles, blogBusiness.loadEnd)
-                    articles.clear()
-                } else {
+                    blogView.showResult(articles, loadEnd)
+                }, { throwable ->
+                    Log.e("blog", "error: " + throwable.message)
                     blogView.showError()
-                }
-            }
+                })
 
-        }, index).execute()
+        compositeDisposable.add(disposable)
+    }
 
+    override fun unsubscribe() {
+        compositeDisposable.clear()
     }
 }

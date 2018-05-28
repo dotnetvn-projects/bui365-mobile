@@ -23,6 +23,9 @@ interface Bui365Api {
     @GET("get-articles")
     fun searchArticles(@Query("search") search: String): Observable<List<Article>>
 
+    @GET("get-article-detail")
+    fun getDetailArticle(@Query("id") id: String): Observable<Article>
+
 
     /**
      * create Retrofit instance

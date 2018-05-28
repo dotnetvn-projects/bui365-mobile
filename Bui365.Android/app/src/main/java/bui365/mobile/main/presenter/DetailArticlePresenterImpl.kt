@@ -1,23 +1,25 @@
 package bui365.mobile.main.presenter
 
 
-import bui365.mobile.main.business.HandbookDetailArticleBusiness
+import android.util.Log
+import bui365.mobile.main.business.DetailArticleBusiness
 import bui365.mobile.main.contract.DetailArticleContract
-import bui365.mobile.main.impl.AsyncTaskListener
-import bui365.mobile.main.request.HandbookDetailArticleRequest
 import com.google.common.base.Preconditions.checkNotNull
+import io.reactivex.disposables.CompositeDisposable
 
 class DetailArticlePresenterImpl(detailArticleView: DetailArticleContract.View) :
         DetailArticleContract.Presenter {
     private val detailArticleView: DetailArticleContract.View =
             checkNotNull(detailArticleView, "Detail Article View cannot null")
-    private val detailArticleBusiness: HandbookDetailArticleBusiness = HandbookDetailArticleBusiness()
+    private val detailArticleBusiness: DetailArticleBusiness = DetailArticleBusiness()
+    private val compositeDisposable: CompositeDisposable
 
     init {
         this.detailArticleView.presenter = this
+        compositeDisposable = CompositeDisposable()
     }
 
-    override fun start() {
+    override fun subscribe() {
 
     }
 
@@ -25,21 +27,28 @@ class DetailArticlePresenterImpl(detailArticleView: DetailArticleContract.View) 
      * @param articleId pass Article Id to call Detail Request
      */
     override fun loadDetailArticle(articleId: String) {
-        HandbookDetailArticleRequest(object : AsyncTaskListener<Any> {
 
-            override fun onTaskPreExecute() {
-                detailArticleView.showLoading()
-            }
+        detailArticleView.showLoading()
 
-            override fun onTaskComplete(result: Any) {
-                detailArticleView.hideLoading()
-                if (detailArticleBusiness.handleData(result)) {
+        //using retrofit and rx java 2 to get detail article
+        compositeDisposable.clear()
+        val disposable = detailArticleBusiness.getDetailArticle(articleId)
+                .subscribe({ article ->
+                    Log.e("kyo", "subscribe: $article")
+                    detailArticleView.hideLoading()
                     detailArticleView.hideError()
-                    detailArticleView.showResult(result)
-                } else {
+                    detailArticleView.showResult(article)
+                }, { throwable ->
+                    Log.e("kyo", "throwable: " + throwable.message)
+                    detailArticleView.hideLoading()
                     detailArticleView.showError()
-                }
-            }
-        }, articleId).execute()
+                })
+
+        compositeDisposable.add(disposable)
+    }
+
+
+    override fun unsubscribe() {
+        compositeDisposable.clear()
     }
 }

@@ -12,7 +12,6 @@ import android.view.*
 import bui365.mobile.main.R
 import bui365.mobile.main.adapter.SearchArticleAdapter
 import bui365.mobile.main.contract.SearchArticleContract
-import bui365.mobile.main.graphic.GridSpacingItemDecoration
 import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.util.Utils
 import kotlinx.android.synthetic.main.fragment_search_article.*
@@ -33,6 +32,11 @@ class SearchArticleFragment : Fragment(), SearchArticleContract.View {
         fun newInstance(): SearchArticleFragment {
             return SearchArticleFragment()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.unsubscribe()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

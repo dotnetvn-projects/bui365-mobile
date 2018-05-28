@@ -104,7 +104,7 @@ class BlogFragment : Fragment(), BlogContract.View, HandbookArticleItemListener 
             start = 0
             loadEnd = false
             loading = false
-            presenter.start()
+            presenter.subscribe()
         }
 
         rcvBlogArticle!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -136,7 +136,7 @@ class BlogFragment : Fragment(), BlogContract.View, HandbookArticleItemListener 
             }
         })
 
-        presenter.start()
+        presenter.subscribe()
     }
 
     override fun showResult(articles: List<Article>, loadEnd: Boolean) {
@@ -185,7 +185,7 @@ class BlogFragment : Fragment(), BlogContract.View, HandbookArticleItemListener 
         view!!.showSnackBarAction(getString(R.string.connection_failed), Snackbar.LENGTH_INDEFINITE) {
             setAction(getString(R.string.retry)) {
                 hideError()
-                presenter.start()
+                presenter.subscribe()
             }
         }
     }
@@ -255,5 +255,10 @@ class BlogFragment : Fragment(), BlogContract.View, HandbookArticleItemListener 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.unsubscribe()
     }
 }// Required empty public constructor

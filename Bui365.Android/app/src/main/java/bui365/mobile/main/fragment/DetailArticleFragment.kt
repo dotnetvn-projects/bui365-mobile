@@ -11,10 +11,10 @@ import android.view.*
 import android.widget.ImageView
 import bui365.mobile.main.R
 import bui365.mobile.main.contract.DetailArticleContract
+import bui365.mobile.main.model.pojo.Article
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_blog_detail_article.*
 import kotlinx.android.synthetic.main.layout_progress_loading.*
-import org.json.JSONObject
 
 
 class DetailArticleFragment : Fragment(), DetailArticleContract.View {
@@ -37,6 +37,11 @@ class DetailArticleFragment : Fragment(), DetailArticleContract.View {
         if (arguments != null) {
             articleId = arguments!!.getString(ARTICLE_ID)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.unsubscribe()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -101,31 +106,25 @@ class DetailArticleFragment : Fragment(), DetailArticleContract.View {
         collapsingToolbar!!.setExpandedTitleTextAppearance(R.style.expandedAppBar)
     }
 
-    override fun showResult(result: Any) {
-        try {
-            val jsonObject = JSONObject(result.toString())
-            content = jsonObject.getString("content")
-            description = jsonObject.getString("description")
-            image = jsonObject.getString("image")
-            title = jsonObject.getString("title")
-            updatedDate = jsonObject.getString("updatedDate")
-            url = jsonObject.getString("url")
+    override fun showResult(article: Article) {
+        content = article.content
+        description = article.description
+        image = article.image
+        title = article.title
+        updatedDate = article.updatedDate
+        url = article.url
 
-            webView.loadData(content, "text/html; charset=UTF-8", "utf-8")
+        webView.loadData(content, "text/html; charset=UTF-8", "utf-8")
 
-            if (image != null && image != "") {
-                imgDetail!!.visibility = View.VISIBLE
-                Glide.with(activity!!).load(image).into(imgDetail!!)
-            } else {
-                imgDetail!!.visibility = View.GONE
-            }
-
-            txtTitle.text = title
-            txtUpdatedDate.text = updatedDate
-
-        } catch (e: Exception) {
-            e.printStackTrace()
+        if (image != null && image != "") {
+            imgDetail!!.visibility = View.VISIBLE
+            Glide.with(activity!!).load(image).into(imgDetail!!)
+        } else {
+            imgDetail!!.visibility = View.GONE
         }
+
+        txtTitle.text = title
+        txtUpdatedDate.text = updatedDate
 
     }
 
@@ -160,7 +159,6 @@ class DetailArticleFragment : Fragment(), DetailArticleContract.View {
     }
 
     companion object {
-
         private const val ARTICLE_ID = "articleId"
         private const val TAG = "kyo"
 
@@ -169,6 +167,5 @@ class DetailArticleFragment : Fragment(), DetailArticleContract.View {
                 putString(ARTICLE_ID, articleId)
             }
         }
-
     }
 }

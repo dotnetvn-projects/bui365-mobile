@@ -53,13 +53,14 @@ class MainFragment : Fragment(), MainContract.View {
 
     override fun onResume() {
         super.onResume()
-        presenter.start()
+        presenter.subscribe()
     }
 
-//    override fun onPause() {
-//        super.onPause()
-//        //call presenter.unsubscribe to avoid leak context
-//    }
+    override fun onPause() {
+        super.onPause()
+        presenter.unsubscribe()
+        //call presenter.unsubscribe to avoid leak context
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -154,7 +155,7 @@ class MainFragment : Fragment(), MainContract.View {
                     view!!.showSnackBarAction(getString(R.string.connection_failed), Snackbar.LENGTH_INDEFINITE) {
                         setAction(getString(R.string.retry)) {
                             hideError()
-                            presenter.start()
+                            presenter.subscribe()
                         }
                     }
                 }

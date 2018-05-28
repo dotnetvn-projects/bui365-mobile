@@ -1,7 +1,11 @@
 package bui365.mobile.main.business
 
+import bui365.mobile.main.api.Bui365Api
 import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.model.pojo.FacebookPOJO
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -10,6 +14,13 @@ import org.json.JSONObject
 class BlogBusiness {
     private var articles: ArrayList<Article> = ArrayList()
     var loadEnd: Boolean = false
+    private val bui365Api by lazy {
+        Bui365Api.create()
+    }
+
+    fun getArticles(start: Int): Observable<List<Article>> {
+        return bui365Api.getBlogArticles(start, 5).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    }
 
     fun handleData(result: Any): ArrayList<Article> {
         try {

@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions.checkNotNull
 import io.reactivex.disposables.CompositeDisposable
 
 class MainPresenterImpl(mainActivityView: MainContract.View) : MainContract.Presenter {
+
     private val mainActivityView: MainContract.View = checkNotNull(mainActivityView, "mainActivityView cannot be null")
     private val mainBusiness: MainBusiness = MainBusiness()
     private var isFirstLoad = true
@@ -18,7 +19,7 @@ class MainPresenterImpl(mainActivityView: MainContract.View) : MainContract.Pres
         compositeDisposable = CompositeDisposable()
     }
 
-    override fun start() {
+    override fun subscribe() {
         loadTask(false)
     }
 
@@ -61,7 +62,7 @@ class MainPresenterImpl(mainActivityView: MainContract.View) : MainContract.Pres
         mainActivityView.showTaskDetailUi(id)
     }
 
-    fun unsubscribe() {
+    override fun unsubscribe() {
         compositeDisposable.clear()
     }
 }

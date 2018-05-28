@@ -42,7 +42,12 @@ class CommentsFragment : Fragment(), CommentsContract.View {
 
     override fun onResume() {
         super.onResume()
-        presenter.start()
+        presenter.subscribe()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.unsubscribe()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
