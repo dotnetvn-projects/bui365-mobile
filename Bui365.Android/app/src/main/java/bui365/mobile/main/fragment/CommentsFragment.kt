@@ -17,15 +17,14 @@ import android.view.ViewGroup
 import android.webkit.*
 import android.widget.FrameLayout
 import bui365.mobile.main.R
-import bui365.mobile.main.presenter.CommentsPresenter
-import bui365.mobile.main.view.CommentsView
+import bui365.mobile.main.contract.CommentsContract
 import kotlinx.android.synthetic.main.fragment_comments.*
 import kotlinx.android.synthetic.main.layout_progress_loading.*
 
 
-class CommentsFragment : Fragment(), CommentsView {
+class CommentsFragment : Fragment(), CommentsContract.View {
 
-    override lateinit var presenter: CommentsPresenter
+    override lateinit var presenter: CommentsContract.Presenter
     private lateinit var url: String
     private lateinit var webViewPop: WebView
 

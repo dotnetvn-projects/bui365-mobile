@@ -10,15 +10,14 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import bui365.mobile.main.R
-import bui365.mobile.main.presenter.HandbookDetailArticlePresenter
-import bui365.mobile.main.view.HandbookDetailArticleView
+import bui365.mobile.main.contract.DetailArticleContract
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_blog_detail_article.*
 import kotlinx.android.synthetic.main.layout_progress_loading.*
 import org.json.JSONObject
 
 
-class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
+class DetailArticleFragment : Fragment(), DetailArticleContract.View {
     private lateinit var articleId: String
     private var title: String? = null
     private var content: String? = null
@@ -31,7 +30,7 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
     private var appBarLayout: AppBarLayout? = null
     private var imgDetail: ImageView? = null
 
-    override lateinit var presenter: HandbookDetailArticlePresenter
+    override lateinit var presenter: DetailArticleContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,7 +111,7 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
             updatedDate = jsonObject.getString("updatedDate")
             url = jsonObject.getString("url")
 
-            webView.loadData(content, "text/html", "utf-8")
+            webView.loadData(content, "text/html; charset=UTF-8", "utf-8")
 
             if (image != null && image != "") {
                 imgDetail!!.visibility = View.VISIBLE
@@ -165,7 +164,7 @@ class HandbookDetailArticleFragment : Fragment(), HandbookDetailArticleView {
         private const val ARTICLE_ID = "articleId"
         private const val TAG = "kyo"
 
-        fun newInstance(articleId: String) = HandbookDetailArticleFragment().apply {
+        fun newInstance(articleId: String) = DetailArticleFragment().apply {
             arguments = Bundle().apply {
                 putString(ARTICLE_ID, articleId)
             }

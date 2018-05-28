@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDelegate
 import bui365.mobile.main.R
 import bui365.mobile.main.fragment.MainFragment
-import bui365.mobile.main.presenter.impl.MainPresenterImpl
+import bui365.mobile.main.presenter.MainPresenterImpl
 import bui365.mobile.main.util.addFragmentToActivity
 import kotlinx.android.synthetic.main.activity_main.*
 

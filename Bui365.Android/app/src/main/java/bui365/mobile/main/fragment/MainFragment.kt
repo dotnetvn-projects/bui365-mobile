@@ -2,6 +2,7 @@ package bui365.mobile.main.fragment
 
 
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
@@ -15,13 +16,13 @@ import android.widget.TextView
 import android.widget.Toast
 import bui365.mobile.main.R
 import bui365.mobile.main.activity.BlogActivity
-import bui365.mobile.main.activity.HandbookDetailArticleActivity
+import bui365.mobile.main.activity.DetailArticleActivity
 import bui365.mobile.main.adapter.MainSlidingAdapter
+import bui365.mobile.main.contract.MainContract
+import bui365.mobile.main.databinding.FragmentMainActivityBinding
 import bui365.mobile.main.impl.MainItemListener
 import bui365.mobile.main.model.pojo.Article
-import bui365.mobile.main.presenter.MainActivityPresenter
 import bui365.mobile.main.util.showSnackBarAction
-import bui365.mobile.main.view.MainActivityView
 import kotlinx.android.synthetic.main.fragment_main_activity.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -29,10 +30,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainFragment : Fragment(), MainActivityView {
+class MainFragment : Fragment(), MainContract.View {
 
-
-    override lateinit var presenter: MainActivityPresenter
+    override lateinit var presenter: MainContract.Presenter
     private lateinit var viewPager: ViewPager
     private lateinit var txtErrorLoading: TextView
     private lateinit var progressBar: ProgressBar
@@ -45,7 +45,7 @@ class MainFragment : Fragment(), MainActivityView {
     private val mainItemListener = object : MainItemListener {
         override fun onImageClick(position: Int) {
             val article = articles[position]
-            val detailArticle = Intent(activity, HandbookDetailArticleActivity::class.java)
+            val detailArticle = Intent(activity, DetailArticleActivity::class.java)
             detailArticle.putExtra("articleId", article.id)
             startActivity(detailArticle)
         }
@@ -56,10 +56,18 @@ class MainFragment : Fragment(), MainActivityView {
         presenter.start()
     }
 
+//    override fun onPause() {
+//        super.onPause()
+//        //call presenter.unsubscribe to avoid leak context
+//    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_main_activity, container, false)
+        val binding: FragmentMainActivityBinding =
+                DataBindingUtil.inflate(inflater, R.layout.fragment_main_activity, container, false)
+        val root = binding.root
+//        val root = inflater.inflate(R.layout.fragment_main_activity, container, false)
         with(root) {
             metrics = resources.displayMetrics
             if (activity != null) {

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import bui365.mobile.main.R
 import bui365.mobile.main.fragment.BlogFragment
-import bui365.mobile.main.presenter.impl.BlogPresenterImpl
+import bui365.mobile.main.presenter.BlogPresenterImpl
 import bui365.mobile.main.util.addFragmentToActivity
 import kotlinx.android.synthetic.main.activity_blog.*
 

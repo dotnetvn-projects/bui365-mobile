@@ -1,22 +1,21 @@
-package bui365.mobile.main.presenter.impl
+package bui365.mobile.main.presenter
 
 
+import android.util.Log
 import bui365.mobile.main.business.MainBusiness
-import bui365.mobile.main.impl.AsyncTaskListener
-import bui365.mobile.main.model.pojo.Article
-import bui365.mobile.main.presenter.MainActivityPresenter
-import bui365.mobile.main.request.SampleRequest
-import bui365.mobile.main.view.MainActivityView
+import bui365.mobile.main.contract.MainContract
 import com.google.common.base.Preconditions.checkNotNull
+import io.reactivex.disposables.CompositeDisposable
 
-class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresenter {
-    private val mainActivityView: MainActivityView = checkNotNull(mainActivityView, "mainActivityView cannot be null")
+class MainPresenterImpl(mainActivityView: MainContract.View) : MainContract.Presenter {
+    private val mainActivityView: MainContract.View = checkNotNull(mainActivityView, "mainActivityView cannot be null")
     private val mainBusiness: MainBusiness = MainBusiness()
-    private var articles: ArrayList<Article> = ArrayList()
     private var isFirstLoad = true
+    private val compositeDisposable: CompositeDisposable
 
     init {
         this.mainActivityView.presenter = this
+        compositeDisposable = CompositeDisposable()
     }
 
     override fun start() {
@@ -40,27 +39,29 @@ class MainPresenterImpl(mainActivityView: MainActivityView) : MainActivityPresen
             //refresh method
         }
 
-        //Call random image api request
-        SampleRequest(object : AsyncTaskListener<String> {
-            override fun onTaskPreExecute() {
-                mainActivityView.showLoading()
-            }
-
-            override fun onTaskComplete(result: Any) {
-                mainActivityView.hideLoading()
-                if (!mainBusiness.isEmptyArticle(result)) {
+        //using retrofit and rx java 2 to call random image api
+        compositeDisposable.clear()
+        val disposable = mainBusiness.getArticles().subscribe(
+                { articles ->
+                    mainActivityView.hideLoading()
                     mainActivityView.hideError()
-                    articles = mainBusiness.handleData(result)
                     mainActivityView.showResult(articles)
-                } else {
+                    Log.e("kyo", "Success:" + articles.toString())
+                },
+                { throwable ->
+                    mainActivityView.hideLoading()
                     mainActivityView.showError()
-                }
-            }
+                    Log.e("kyo", "error:" + throwable.message)
+                })
 
-        }).execute()
+        compositeDisposable.add(disposable)
     }
 
     override fun openTaskDetails(id: Int) {
         mainActivityView.showTaskDetailUi(id)
+    }
+
+    fun unsubscribe() {
+        compositeDisposable.clear()
     }
 }

@@ -1,40 +1,18 @@
 package bui365.mobile.main.business
 
+import bui365.mobile.main.api.Bui365Api
 import bui365.mobile.main.model.pojo.Article
-import org.json.JSONArray
-import org.json.JSONException
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 class MainBusiness {
-    private var articles: ArrayList<Article> = ArrayList()
-
-    fun handleData(result: Any): ArrayList<Article> {
-        try {
-            val jsonArray = JSONArray(result.toString())
-            val length = jsonArray.length()
-            for (i in 0 until length) {
-                val jsonObject = jsonArray.getJSONObject(i)
-                val article = Article()
-                article.id = jsonObject.getString("id")
-                article.categoryId = jsonObject.getString("categoryId")
-                article.categoryName = jsonObject.getString("categoryName")
-                article.content = jsonObject.getString("content")
-                article.description = jsonObject.getString("description")
-                article.image = jsonObject.getString("image")
-                article.subjectId = jsonObject.getString("subjectId")
-                article.subjectName = jsonObject.getString("subjectName")
-                article.title = jsonObject.getString("title")
-                article.updatedDate = jsonObject.getString("updatedDate")
-                article.url = jsonObject.getString("url")
-                articles.add(article)
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return articles
+    private val bui365Api by lazy {
+        Bui365Api.create()
     }
 
-    fun isEmptyArticle(result: Any): Boolean {
-        return result == ""
+    fun getArticles(): Observable<List<Article>> {
+        return bui365Api.getBlogArticles(0, 5).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 }

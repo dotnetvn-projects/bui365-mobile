@@ -2,10 +2,9 @@ package bui365.mobile.main.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import bui365.mobile.main.R
 import bui365.mobile.main.fragment.CommentsFragment
-import bui365.mobile.main.presenter.impl.CommentsPresenterImpl
+import bui365.mobile.main.presenter.CommentsPresenterImpl
 import bui365.mobile.main.util.addFragmentToActivity
 import kotlinx.android.synthetic.main.activity_comments.*
 

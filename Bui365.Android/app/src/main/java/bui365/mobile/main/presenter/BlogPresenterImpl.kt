@@ -1,23 +1,22 @@
-package bui365.mobile.main.presenter.impl
+package bui365.mobile.main.presenter
 
 
 import android.net.Uri
 import android.util.Log
 import bui365.mobile.main.business.BlogBusiness
+import bui365.mobile.main.contract.BlogContract
 import bui365.mobile.main.impl.AsyncTaskListener
 import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.model.pojo.FacebookPOJO
-import bui365.mobile.main.presenter.BlogPresenter
 import bui365.mobile.main.request.BlogArticleRequest
 import bui365.mobile.main.request.FacebookUrlRequest
-import bui365.mobile.main.view.BlogView
 import com.facebook.share.model.ShareHashtag
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.widget.ShareDialog
 import com.google.common.base.Preconditions.checkNotNull
 
-class BlogPresenterImpl(blogView: BlogView) : BlogPresenter {
-    private val blogView: BlogView = checkNotNull(blogView, "blogView cannot be null")
+class BlogPresenterImpl(blogView: BlogContract.View) : BlogContract.Presenter {
+    private val blogView: BlogContract.View = checkNotNull(blogView, "blogView cannot be null")
     private val blogBusiness: BlogBusiness = BlogBusiness()
     private var articles: ArrayList<Article> = ArrayList()
     private var facebookPOJO: FacebookPOJO = FacebookPOJO()

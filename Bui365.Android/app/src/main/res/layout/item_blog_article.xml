@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="article"
             type="bui365.mobile.main.model.pojo.Article" />
-        
+
         <variable
             name="listener"
-            type="bui365.mobile.main.impl.HandbookArticleItemListener"/>
+            type="bui365.mobile.main.impl.HandbookArticleItemListener" />
     </data>
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="2dp"
@@ -28,9 +29,9 @@
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/da_lat"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/da_lat" />
 
             <TextView
                 android:id="@+id/txtName"
@@ -71,8 +72,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:adjustViewBounds="true"
-                android:onClick="@{() -> listener.onImageClick(article)}"
                 android:background="@color/little_grey"
+                android:onClick="@{() -> listener.onImageClick(article)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imgAvatar"
@@ -129,8 +130,8 @@
                 android:drawablePadding="4dp"
                 android:drawableStart="@{@drawable/ic_comment_black_24dp}"
                 android:gravity="start|center_vertical"
-                android:padding="8dp"
                 android:onClick="@{() -> listener.onCommentClick(article)}"
+                android:padding="8dp"
                 android:text="@{@string/txtComment(article.facebookPOJO.share.commentCount)}"
                 app:layout_constraintEnd_toStartOf="@+id/txtShare"
                 app:layout_constraintStart_toEndOf="@+id/txtLike"
@@ -143,8 +144,8 @@
                 android:drawablePadding="4dp"
                 android:drawableStart="@{@drawable/ic_share_black_24dp}"
                 android:gravity="start|center_vertical"
-                android:padding="8dp"
                 android:onClick="@{() -> listener.onShareClick(article)}"
+                android:padding="8dp"
                 android:text="@{@string/txtShare(article.facebookPOJO.share.shareCount)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

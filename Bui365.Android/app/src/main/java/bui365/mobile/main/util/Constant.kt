@@ -1,7 +1,9 @@
 package bui365.mobile.main.util
 
 
-object Constant {
-    var VIEW_ITEM = 0
-    var VIEW_LOADING = 1
+class Constant {
+    companion object {
+        const val VIEW_ITEM = 0
+        const val VIEW_LOADING = 1
+    }
 }

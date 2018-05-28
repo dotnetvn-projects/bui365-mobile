@@ -14,16 +14,16 @@ import android.view.*
 import android.widget.Toast
 import bui365.mobile.main.R
 import bui365.mobile.main.activity.CommentsActivity
-import bui365.mobile.main.activity.HandbookDetailArticleActivity
+import bui365.mobile.main.activity.DetailArticleActivity
+import bui365.mobile.main.activity.SearchArticleActivity
 import bui365.mobile.main.adapter.BlogArticleAdapter
+import bui365.mobile.main.contract.BlogContract
 import bui365.mobile.main.graphic.DividerItemDecorator
 import bui365.mobile.main.impl.HandbookArticleItemListener
 import bui365.mobile.main.model.pojo.Article
 import bui365.mobile.main.model.pojo.EmptyArticle
 import bui365.mobile.main.model.pojo.FacebookPOJO
-import bui365.mobile.main.presenter.BlogPresenter
 import bui365.mobile.main.util.showSnackBarAction
-import bui365.mobile.main.view.BlogView
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -37,9 +37,9 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 
-class BlogFragment : Fragment(), BlogView, HandbookArticleItemListener {
+class BlogFragment : Fragment(), BlogContract.View, HandbookArticleItemListener {
 
-    override lateinit var presenter: BlogPresenter
+    override lateinit var presenter: BlogContract.Presenter
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var callbackManager: CallbackManager
     private lateinit var shareDialog: ShareDialog
@@ -213,7 +213,7 @@ class BlogFragment : Fragment(), BlogView, HandbookArticleItemListener {
     }
 
     override fun showDetailArticle(id: String) {
-        Intent(activity, HandbookDetailArticleActivity::class.java).apply {
+        Intent(activity, DetailArticleActivity::class.java).apply {
             putExtra("articleId", id)
         }.also { startActivity(it) }
     }
@@ -232,6 +232,17 @@ class BlogFragment : Fragment(), BlogView, HandbookArticleItemListener {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.handbook_activity_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.actionSearch -> {
+                Intent(activity, SearchArticleActivity::class.java).also {
+                    startActivity(it)
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {

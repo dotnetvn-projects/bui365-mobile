@@ -1,16 +1,15 @@
-package bui365.mobile.main.presenter.impl
+package bui365.mobile.main.presenter
 
 
 import bui365.mobile.main.business.HandbookDetailArticleBusiness
+import bui365.mobile.main.contract.DetailArticleContract
 import bui365.mobile.main.impl.AsyncTaskListener
-import bui365.mobile.main.presenter.HandbookDetailArticlePresenter
 import bui365.mobile.main.request.HandbookDetailArticleRequest
-import bui365.mobile.main.view.HandbookDetailArticleView
 import com.google.common.base.Preconditions.checkNotNull
 
-class HandbookDetailArticlePresenterImpl(detailArticleView: HandbookDetailArticleView) :
-        HandbookDetailArticlePresenter {
-    private val detailArticleView: HandbookDetailArticleView =
+class DetailArticlePresenterImpl(detailArticleView: DetailArticleContract.View) :
+        DetailArticleContract.Presenter {
+    private val detailArticleView: DetailArticleContract.View =
             checkNotNull(detailArticleView, "Detail Article View cannot null")
     private val detailArticleBusiness: HandbookDetailArticleBusiness = HandbookDetailArticleBusiness()
 
