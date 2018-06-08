@@ -100,6 +100,7 @@ class BlogPresenterImpl(blogView: BlogContract.View) : BlogContract.Presenter {
                     blogView.showResult(articles, loadEnd)
                 }, { throwable ->
                     Log.e("blog", "error: " + throwable.message)
+                    blogView.hideLoading()
                     blogView.showError()
                 })
 

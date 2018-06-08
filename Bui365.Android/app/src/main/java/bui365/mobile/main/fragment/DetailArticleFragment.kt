@@ -107,6 +107,7 @@ class DetailArticleFragment : Fragment(), DetailArticleContract.View {
     }
 
     override fun showResult(article: Article) {
+        Log.e("kyo","showResult: $article")
         content = article.content
         description = article.description
         image = article.image
@@ -114,7 +115,10 @@ class DetailArticleFragment : Fragment(), DetailArticleContract.View {
         updatedDate = article.updatedDate
         url = article.url
 
-        webView.loadData(content, "text/html; charset=UTF-8", "utf-8")
+        val test = "http://bui365.com/mobile/album-trekking-cung-ta-nang-phan-dung-cua-lost-team-(team-lac-troi)-30-4-va-1-5-2017-p-hLXE9kBMp7s\$"
+
+        webView.loadUrl(test)
+//        webView.loadData(test, "text/html; charset=UTF-8", "utf-8")
 
         if (image != null && image != "") {
             imgDetail!!.visibility = View.VISIBLE

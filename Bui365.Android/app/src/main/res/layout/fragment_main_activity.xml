@@ -67,6 +67,7 @@
             android:weightSum="3">
 
             <Button
+                android:id="@+id/btnHot"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -81,6 +82,7 @@
                 android:textAllCaps="false" />
 
             <Button
+                android:id="@+id/btnNotification"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -95,6 +97,7 @@
                 android:textAllCaps="false" />
 
             <Button
+                android:id="@+id/btnProfile"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

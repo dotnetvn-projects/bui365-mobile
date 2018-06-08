@@ -15,8 +15,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import bui365.mobile.main.R
-import bui365.mobile.main.activity.BlogActivity
-import bui365.mobile.main.activity.DetailArticleActivity
+import bui365.mobile.main.activity.*
 import bui365.mobile.main.adapter.MainSlidingAdapter
 import bui365.mobile.main.contract.MainContract
 import bui365.mobile.main.databinding.FragmentMainActivityBinding
@@ -68,7 +67,6 @@ class MainFragment : Fragment(), MainContract.View {
         val binding: FragmentMainActivityBinding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_main_activity, container, false)
         val root = binding.root
-//        val root = inflater.inflate(R.layout.fragment_main_activity, container, false)
         with(root) {
             metrics = resources.displayMetrics
             if (activity != null) {
@@ -85,7 +83,10 @@ class MainFragment : Fragment(), MainContract.View {
 
         btnHandbook.setOnClickListener { presenter.openTaskDetails(it.id) }
         btnBlog.setOnClickListener { presenter.openTaskDetails(it.id) }
-        btnFavorite.setOnClickListener { }
+        btnFavorite.setOnClickListener { presenter.openTaskDetails(it.id) }
+        btnHot.setOnClickListener { presenter.openTaskDetails(it.id) }
+        btnNotification.setOnClickListener { presenter.openTaskDetails(it.id) }
+        btnProfile.setOnClickListener { presenter.openTaskDetails(it.id) }
 
         viewPager.layoutParams.width = metrics.widthPixels
         viewPager.layoutParams.height = metrics.heightPixels / 2
@@ -132,10 +133,29 @@ class MainFragment : Fragment(), MainContract.View {
     override fun showTaskDetailUi(id: Int) {
         when (id) {
             R.id.btnBlog -> {
-                val intent = Intent(activity, BlogActivity::class.java)
-                startActivity(intent)
+                val blogActivity = Intent(activity, BlogActivity::class.java)
+                startActivity(blogActivity)
             }
-
+            R.id.btnHandbook -> {
+                val handbookActivity = Intent(activity, HandbookActivity::class.java)
+                startActivity(handbookActivity)
+            }
+            R.id.btnFavorite -> {
+                val favoriteActivity = Intent(activity, FavoriteActivity::class.java)
+                startActivity(favoriteActivity)
+            }
+            R.id.btnHot -> {
+                val hotActivity = Intent(activity, HotActivity::class.java)
+                startActivity(hotActivity)
+            }
+            R.id.btnNotification -> {
+                val hotActivity = Intent(activity, HotActivity::class.java)
+                startActivity(hotActivity)
+            }
+            R.id.btnProfile -> {
+                val hotActivity = Intent(activity, HotActivity::class.java)
+                startActivity(hotActivity)
+            }
         }
 
     }
